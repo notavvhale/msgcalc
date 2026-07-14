@@ -7,6 +7,45 @@ import xml.etree.ElementTree as ET
 
 # -------------------- НАСТРОЙКИ СТРАНИЦЫ --------------------
 st.set_page_config(page_title="Калькулятор доставки | Китай → РФ", page_icon="🚚", layout="wide")
+st.markdown("""
+<style>
+
+.stApp{
+    background:#F6F4EF;
+}
+
+div[data-testid="stVerticalBlock"]{
+    gap:1rem;
+}
+
+div[data-testid="stMetric"]{
+    background:#FCFBF8;
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.stButton>button{
+    background:#D98A2B;
+    color:white;
+    border:none;
+    border-radius:10px;
+    height:46px;
+    font-weight:600;
+}
+
+.stButton>button:hover{
+    background:#C97A18;
+}
+
+.stNumberInput,
+.stSelectbox,
+.stTextInput{
+    background:#FCFBF8;
+}
+
+</style>
+""", unsafe_allow_html=True)
 st.title("🚚 Калькулятор стоимости доставки сборного груза из Китая в Россию")
 st.markdown("*Инструмент для транспортно-экспедиторских компаний*")
 
