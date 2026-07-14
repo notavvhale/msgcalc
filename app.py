@@ -6,48 +6,114 @@ import requests
 import xml.etree.ElementTree as ET
 
 # -------------------- НАСТРОЙКИ СТРАНИЦЫ --------------------
-st.set_page_config(page_title="Калькулятор доставки | Китай → РФ", page_icon="🚚", layout="wide")
-st.markdown("""
+light_css = """
 <style>
 
 .stApp{
-    background:#F6F4EF;
-}
-
-div[data-testid="stVerticalBlock"]{
-    gap:1rem;
+    background:#fffef4;
+    color:#222222;
 }
 
 div[data-testid="stMetric"]{
-    background:#FCFBF8;
-    border-radius:14px;
-    padding:16px;
-    box-shadow:0 4px 14px rgba(0,0,0,.05);
+    background:#FFFFFF;
+    border:1px solid #E5E7EB;
+    border-radius:16px;
 }
 
-.stButton>button{
+.stButton > button{
     background:#D98A2B;
     color:white;
-    border:none;
-    border-radius:10px;
-    height:46px;
-    font-weight:600;
-}
-
-.stButton>button:hover{
-    background:#C97A18;
-}
-
-.stNumberInput,
-.stSelectbox,
-.stTextInput{
-    background:#FCFBF8;
 }
 
 </style>
-""", unsafe_allow_html=True)
+"""
+dark_css = """
+<style>
+
+.stApp{
+    background:#141414;
+    color:#141414;
+}
+
+div[data-testid="stMetric"]{
+    background:#141414;
+    border:1px solid #141414;
+    border-radius:16px;
+}
+
+.stButton > button{
+    background:#141414;
+    color:black;
+}
+
+</style>
+"""
+theme = st.segmented_control(
+    "",
+    ["☀ Светлая", "🌙 Тёмная"],
+    default="☀ Светлая"
+)
+if theme == "☀ Светлая":
+    st.markdown(light_css, unsafe_allow_html=True)
+else:
+    st.markdown(dark_css, unsafe_allow_html=True)
+
+st.set_page_config(page_title="Калькулятор доставки | Китай → РФ", page_icon="🚚", layout="wide")
 st.title("🚚 Калькулятор стоимости доставки сборного груза из Китая в Россию")
-st.markdown("*Инструмент для транспортно-экспедиторских компаний*")
+st.markdown("Инструмент для транспортно-экспедиторских компаний"
+"""
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body, [class*="st-"]{
+    font-family: 'Inter', sans-serif !important;
+
+.footer{
+    position:fixed;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:60px;
+
+    background:#FFFFFF;
+
+    border-top:1px solid #E5E7EB;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 32px;
+
+    z-index:9999;
+
+    box-shadow:0 -4px 12px rgba(0,0,0,.05);
+}
+
+.main .block-container{
+    padding-bottom:80px;
+}
+
+.footer-left,
+.footer-right{
+    color:#6B7280;
+    font-size:14px;
+}
+    
+/* Верхняя панель */
+[data-testid="stHeader"]{
+    display:none;
+}
+
+/* Отступ сверху после скрытия */
+.block-container{
+    padding-top:1rem;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -------------------- ФУНКЦИЯ ПОЛУЧЕНИЯ КУРСА ЦБ --------------------
 @st.cache_data(ttl=3600)
@@ -128,14 +194,16 @@ def calc_customs_fee(t_val_rub):
             return fee
 
 # -------------------- ВКЛАДКИ --------------------
-tab1, tab2 = st.tabs(["📦 Калькулятор", "💵 Прайс-лист"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Калькулятор", "Прайс-лист", "Таможня","Последняя миля", "Результат"])
 
 # ==================== ВКЛАДКА 1: КАЛЬКУЛЯТОР ====================
+    
+
 with tab1:
-    col_input, col_result = st.columns([1, 2])
+    col_input,col_input2= st.columns([1, 1])
 
     with col_input:
-        st.header("📦 Параметры груза")
+        st.header("Параметры груза")
 
         weight_per_unit = st.number_input("Вес одного места (кг)", min_value=0.1, value=500.0, step=1.0)
         length = st.number_input("Длина места (мм)", min_value=100, value=800, step=10)
@@ -149,158 +217,81 @@ with tab1:
 
         total_weight = weight_per_unit * qty
         volume = calc_volume(l_m, w_m, h_m, qty)
-
-        st.metric("Общий вес партии", f"{total_weight:.0f} кг")
-        st.metric("Объём груза", f"{volume:.3f} м³")
-
-        st.divider()
-        st.header("🚚 Довоз")
-        dovoz_km = st.number_input("Расстояние довоза (км)", min_value=0, value=50, step=1)
-
-        st.divider()
-        st.header("💰 Товар")
+    with col_input2:
+        st.header("Товар")
         invoice_usd = st.number_input("Стоимость товара (USD)", min_value=0.0, value=5000.0, step=100.0)
         invoice_rub = invoice_usd * st.session_state.USD_RUB
         st.caption(f"В рублях: {invoice_rub:,.2f} ₽")
+        st.metric("Общий вес партии", f"{total_weight:.0f} кг")
+        st.metric("Объём груза", f"{volume:.3f} м³")
 
-        st.divider()
-        st.header("📋 Таможня")
-        calc_customs_flag = st.checkbox("Рассчитать таможенные платежи", value=False)
-
-        if calc_customs_flag:
-            duty_rate = st.number_input(
-                "Ставка пошлины (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=7.5,
-                step=0.1,
-                format="%.1f",
-                key="duty_rate_input"
-            )
-            vat_rate = st.number_input(
-                "Ставка НДС (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=22.0,
-                step=1.0,
-                format="%.0f",
-                key="vat_rate_input"
-            )
-
-    with col_result:
-        st.header("📊 Результаты")
-
-        t = st.session_state.tariffs
-        usd = st.session_state.USD_RUB
-
-        dovoz_cost = calc_dovoz(dovoz_km)
-        insurance_rub = invoice_usd * usd * 0.001
+with tab4:                   
+    t = st.session_state.tariffs
+    usd = st.session_state.USD_RUB
+    st.header("Последняя миля")
+    dovoz_km = st.number_input("Расстояние (км)", min_value=0, value=50, step=1)
+    dovoz_cost = calc_dovoz(dovoz_km)
+    insurance_rub = invoice_usd * usd * 0.001
 
         # 1. Прямое ЖД
-        vw_rail = volume * K_RAIL
-        cw_rail = max(total_weight, vw_rail)
-        cost_rail_usd = max(cw_rail * t["rail_usd_kg"], volume * t["rail_usd_m3"]) + t["rail_doc_usd"]
-        cost_rail_rub = cost_rail_usd * usd + dovoz_cost
+    vw_rail = volume * K_RAIL
+    cw_rail = max(total_weight, vw_rail)
+    cost_rail_usd = max(cw_rail * t["rail_usd_kg"], volume * t["rail_usd_m3"]) + t["rail_doc_usd"]
+    cost_rail_rub = cost_rail_usd * usd + dovoz_cost
 
         # 2. Авиа
-        vw_air = volume * K_AIR
-        cw_air = max(total_weight, vw_air)
-        cost_air_usd = max(cw_air * t["air_usd_kg"], 200)
-        cost_air_rub = cost_air_usd * usd
-        terminal_air = total_weight * t["air_prr_rub_kg"] + 1481.92 + 724.95 + 1240.74
-        cost_air_total_rub = cost_air_rub + terminal_air + dovoz_cost
+    vw_air = volume * K_AIR
+    cw_air = max(total_weight, vw_air)
+    cost_air_usd = max(cw_air * t["air_usd_kg"], 200)
+    cost_air_rub = cost_air_usd * usd
+    terminal_air = total_weight * t["air_prr_rub_kg"] + 1481.92 + 724.95 + 1240.74
+    cost_air_total_rub = cost_air_rub + terminal_air + dovoz_cost
 
         # 3. Авто LTL
-        ldm_total = calc_ldm(l_m, w_m, qty)
-        vw_road = ldm_total * K_LDM
-        cw_road = max(total_weight, vw_road)
-        cost_road_usd = cw_road * t["road_usd_kg"] + t["road_doc_usd"]
-        cost_road_rub = cost_road_usd * usd + dovoz_cost
+    ldm_total = calc_ldm(l_m, w_m, qty)
+    vw_road = ldm_total * K_LDM
+    cw_road = max(total_weight, vw_road)
+    cost_road_usd = cw_road * t["road_usd_kg"] + t["road_doc_usd"]
+    cost_road_rub = cost_road_usd * usd + dovoz_cost
 
         # 4. Море+ЖД
-        cw_sea_multi = max(total_weight, volume * K_SEA)
-        cw_rail_multi = max(total_weight, volume * K_RAIL)
-        thc_rub = volume * t["thc_sea_usd_m3"] * usd
-        doc_sea_rub = t["doc_sea_usd"] * usd
-        f_rail_rub = cw_rail_multi * t["r_rail_usd_m3"] * usd
-        f_sea_rub = cw_sea_multi * t["r_sea_usd_kg"] * usd
-        cost_multi_rub = thc_rub + doc_sea_rub + f_rail_rub + f_sea_rub + dovoz_cost
+    cw_sea_multi = max(total_weight, volume * K_SEA)
+    cw_rail_multi = max(total_weight, volume * K_RAIL)
+    thc_rub = volume * t["thc_sea_usd_m3"] * usd
+    doc_sea_rub = t["doc_sea_usd"] * usd
+    f_rail_rub = cw_rail_multi * t["r_rail_usd_m3"] * usd
+    f_sea_rub = cw_sea_multi * t["r_sea_usd_kg"] * usd
+    cost_multi_rub = thc_rub + doc_sea_rub + f_rail_rub + f_sea_rub + dovoz_cost
 
         # Таблица
-        results = [
+        
+    results = [
             ("🚂 Ж/Д прямая (LCL RW)", cost_rail_rub, 25, f"{cw_rail:.0f} кг"),
             ("✈️ Авиа прямая (AIR)", cost_air_total_rub, 5, f"{cw_air:.0f} кг"),
-            ("🚛 Авто LTL (LDM)", cost_road_rub, 22, f"{cw_road:.0f} кг (LDM {ldm_total} м)"),
-            ("🚢 Море+ЖД (LCL SR)", cost_multi_rub, 35, f"Море: {cw_sea_multi:.0f} кг / ЖД: {cw_rail_multi:.0f} кг"),
+           ("🚢 Море+ЖД (LCL SR)", cost_multi_rub, 35, f"Море: {cw_sea_multi:.0f} кг / ЖД: {cw_rail_multi:.0f} кг"),
         ]
-
-        df = pd.DataFrame(results, columns=["Маршрут", "Стоимость (руб.)", "Срок (дн.)", "Оплач. база"])
-        min_cost = df["Стоимость (руб.)"].min()
-
-        def highlight_min(val):
-            return 'background-color: #90EE90' if val == min_cost else ''
-
-        st.dataframe(df.style.map(highlight_min, subset=["Стоимость (руб.)"]), use_container_width=True, hide_index=True)
-
         # График
-        fig = go.Figure()
-        fig.add_trace(go.Bar(
-            name="Стоимость (руб.)", x=df["Маршрут"], y=df["Стоимость (руб.)"],
-            text=[f"{x:,.0f} ₽" for x in df["Стоимость (руб.)"]], textposition="outside",
-            marker_color="steelblue"
-        ))
-        fig.add_trace(go.Scatter(
-            name="Срок (дней)", x=df["Маршрут"], y=df["Срок (дн.)"],
-            yaxis="y2", mode="lines+markers",
-            line=dict(color="red", width=3), marker=dict(size=12)
-        ))
-        fig.update_layout(
-            title="Сравнение маршрутов доставки",
-            yaxis_title="Стоимость (руб.)",
-            yaxis2=dict(title="Срок (дней)", overlaying="y", side="right"),
-            template="plotly_white", height=500
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        #fig = go.Figure()
+        #fig.add_trace(go.Bar(
+           # name="Стоимость (руб.)", x=df["Маршрут"], y=df["Стоимость (руб.)"],
+            #text=[f"{x:,.0f} ₽" for x in df["Стоимость (руб.)"]], textposition="outside",
+            #marker_color="steelblue"
+        #))
+        #fig.add_trace(go.Scatter(
+           # name="Срок (дней)", x=df["Маршрут"], y=df["Срок (дн.)"],
+            #yaxis="y2", mode="lines+markers",
+           # line=dict(color="red", width=3), marker=dict(size=12)
+        #))
+        #fig.update_layout(
+        #    title="Сравнение маршрутов доставки",
+           # yaxis_title="Стоимость (руб.)",
+            #yaxis2=dict(title="Срок (дней)", overlaying="y", side="right"),
+           # template="plotly_white", height=500
+       # )
+        #st.plotly_chart(fig, use_container_width=True)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Страховка (0,1%)", f"{insurance_rub:,.2f} ₽")
-        with col2:
-            st.metric("Стоимость довоза", f"{dovoz_cost:,.2f} ₽")
-
-        # Таможня
-        if calc_customs_flag:
-            st.divider()
-            st.header("🏛️ Таможенные платежи")
-
-            duty_rate_decimal = duty_rate / 100.0
-            vat_rate_decimal = vat_rate / 100.0
-
-            t_val = (invoice_usd + cost_rail_usd) * usd
-            duty = t_val * duty_rate_decimal
-            vat = (t_val + duty) * vat_rate_decimal
-            fee = calc_customs_fee(t_val)
-            total_customs = duty + vat + fee
-
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("Тамож. стоимость", f"{t_val:,.2f} ₽")
-            col2.metric(f"Пошлина ({duty_rate:.1f}%)", f"{duty:,.2f} ₽")
-            col3.metric(f"НДС ({vat_rate:.0f}%)", f"{vat:,.2f} ₽")
-            col4.metric("Тамож. сбор", f"{fee:,.2f} ₽")
-
-            st.metric("### Итого таможенных платежей", f"{total_customs:,.2f} ₽")
-
-            pie_fig = px.pie(
-                names=["Пошлина", "НДС", "Сбор"],
-                values=[duty, vat, fee],
-                title="Структура таможенных платежей",
-                color_discrete_sequence=px.colors.qualitative.Set2
-            )
-            pie_fig.update_traces(textposition="inside", textinfo="percent+label+value")
-            st.plotly_chart(pie_fig, use_container_width=True)
-
-            full_cost = invoice_rub + cost_rail_rub + total_customs + insurance_rub
-            st.metric("### 💰 Полная себестоимость", f"{full_cost:,.2f} ₽")
+        
+        
 
 # ==================== ВКЛАДКА 2: ПРАЙС-ЛИСТ ====================
 with tab2:
@@ -389,8 +380,98 @@ with tab2:
         if "cbr_date" in st.session_state:
             del st.session_state.cbr_date
         st.rerun()
+with tab3:
+    total_customs = 0
+    full_cost = invoice_rub + cost_rail_rub + total_customs + insurance_rub
+    st.header("Таможня")
+    calc_customs_flag = st.checkbox("Рассчитать таможенные платежи", key="calc_customs_flag", value=False)
 
+        # Таможня
+    if st.session_state.calc_customs_flag:
+            st.divider()
+            st.header("Таможенные платежи")
+            vat_rate = st.number_input(
+                "Ставка НДС (%)",
+                min_value=0.0,
+                max_value=100.0,
+                value=22.0,
+                step=1.0,
+                format="%.0f",
+                key="vat_rate_input"
+                )
+            duty_rate = st.number_input(
+                "Ставка пошлины (%)",
+                min_value=0.0,
+                max_value=100.0,
+                value=7.5,
+                step=0.1,
+                format="%.1f",
+                key="duty_rate_input"
+                )
+            duty_rate_decimal = duty_rate / 100.0
+            vat_rate_decimal = vat_rate / 100.0
+
+            t_val = (invoice_usd + cost_rail_usd) * usd
+            duty = t_val * duty_rate_decimal
+            vat = (t_val + duty) * vat_rate_decimal
+            fee = calc_customs_fee(t_val)
+            total_customs = duty + vat + fee
+
+            st.header("Таможня")
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("Тамож. стоимость", f"{t_val:,.2f} ₽")
+            col2.metric(f"Пошлина ({duty_rate:.1f}%)", f"{duty:,.2f} ₽")
+            col3.metric(f"НДС ({vat_rate:.0f}%)", f"{vat:,.2f} ₽")
+            col4.metric("Тамож. сбор", f"{fee:,.2f} ₽")
+
+            st.metric("Итого таможенных платежей", f"{total_customs:,.2f} ₽")
+            st.metric("Полная себестоимость", f"{full_cost:,.2f} ₽")
+
+            #pie_fig = px.pie(
+              #  names=["Пошлина", "НДС", "Сбор"],
+               # values=[duty, vat, fee],
+               # title="Структура таможенных платежей",
+               #pie_fig.update_traces(textposition="inside", textinfo="percent+label+value")
+            #st.plotly_chart(pie_fig, use_container_width=True)      
+
+with tab5:
+    st.header("Результат")
+    df = pd.DataFrame(results, columns=["Маршрут", "Стоимость (руб.)", "Срок (дн.)", "Оплач. база"])
+    min_cost = df["Стоимость (руб.)"].min()
+
+    def highlight_min(val):
+        return 'background-color: hsl(32, 78%, 56%)' if val == min_cost else ''
+
+    st.dataframe(df.style.map(highlight_min, subset=["Стоимость (руб.)"]), use_container_width=True, hide_index=True)
+    if st.session_state.calc_customs_flag:
+        st.header("Таможня")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Тамож. стоимость", f"{t_val:,.2f} ₽")
+        col2.metric(f"Пошлина ({duty_rate:.1f}%)", f"{duty:,.2f} ₽")
+        col3.metric(f"НДС ({vat_rate:.0f}%)", f"{vat:,.2f} ₽")
+        col4.metric("Тамож. сбор", f"{fee:,.2f} ₽")
+
+        st.metric("Итого таможенных платежей", f"{total_customs:,.2f} ₽")
+        st.metric("Полная себестоимость", f"{full_cost:,.2f} ₽")
+    else:
+        st.metric("Полная себестоимость", f"{full_cost:,.2f} ₽")
 # -------------------- ПОДВАЛ --------------------
+footer_html = f"""<div class="footer">
+
+<div class="footer-left">
+Страховка (0,1%) {insurance_rub:,.2f} ₽ |
+Стоимость довоза {dovoz_cost:,.2f} ₽ 
+</div>
+
+<div class="footer-right">
+Полная себестоимость {full_cost:,.2f} ₽
+</div>
+
+</div>
+"""
+
+
+st.markdown(footer_html, unsafe_allow_html=True)
 st.divider()
 st.caption("© 2026 | Калькулятор разработан в рамках выпускной квалификационной работы")
 st.caption(f"Курс ЦБ: USD = {st.session_state.USD_RUB:.4f} руб., CNY = {st.session_state.CNY_RUB:.4f} руб.")

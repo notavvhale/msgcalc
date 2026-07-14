@@ -1,0 +1,13 @@
+[theme]
+
+base="light"
+
+primaryColor="hsl(32, 78%, 56%)"
+
+backgroundColor="#fffef8"
+
+secondaryBackgroundColor="#F8F9FA"
+
+textColor="#6164ff"
+
+#font="serif"
