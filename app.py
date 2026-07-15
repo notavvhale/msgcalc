@@ -8,6 +8,10 @@ import xml.etree.ElementTree as ET
 # -------------------- НАСТРОЙКИ СТРАНИЦЫ --------------------
 light_css = """
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body, [class*="st-"]{
+    font-family: 'Inter', sans-serif !important;
 
 .stApp{
     background:#fffef4;
@@ -24,7 +28,131 @@ div[data-testid="stMetric"]{
     background:#D98A2B;
     color:white;
 }
+/* ===========================================
+   SIDEBAR
+=========================================== */
 
+section[data-testid="stSidebar"]{
+    background:#173A63;
+    width:260px !important;
+    min-width:260px !important;
+    max-width:260px !important;
+
+    border-right:none;
+}
+
+section[data-testid="stSidebar"] > div{
+    padding-top:20px;
+}
+
+/* чтобы не перекрывал footer */
+section[data-testid="stSidebar"] > div:first-child{
+    height:calc(100vh - 70px);
+    overflow-y:auto;
+}
+
+/* Заголовки */
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3{
+
+    color:white;
+
+}
+
+/* Divider */
+
+section[data-testid="stSidebar"] hr{
+
+    border-color:rgba(255,255,255,.08);
+
+}
+
+/* Radio */
+
+div[role="radiogroup"] label{
+
+    background:transparent;
+
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    margin-bottom:6px;
+
+    transition:.2s;
+
+}
+
+div[role="radiogroup"] label:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
+
+div[role="radiogroup"] p{
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+/* выбранный пункт */
+
+div[role="radiogroup"] label:has(input:checked){
+
+    background:#F7941D;
+
+}
+
+div[role="radiogroup"] label:has(input:checked) p{
+
+    color:white;
+
+}
+
+.footer{
+    position:fixed;
+
+    left:260px;
+    right:0;
+    bottom:0;
+
+    height:60px;
+
+    background:#FFFFFF;
+
+    border-top:1px solid #E5E7EB;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 32px;
+
+    z-index:9999;
+
+    box-shadow:0 -4px 12px rgba(0,0,0,.05);
+}
+.footer-left,
+.footer-right{
+    color:#6B7280;
+    font-size:14px;
+}
+    
+/* Верхняя панель */
+[data-testid="stHeader"]{
+    display:none;
+}
+
+/* Отступ сверху после скрытия */
+.block-container{
+    padding-top:1rem;
+}
 </style>
 """
 dark_css = """
@@ -46,33 +174,97 @@ div[data-testid="stMetric"]{
     color:black;
 }
 
-</style>
-"""
-theme = st.segmented_control(
-    "",
-    ["☀ Светлая", "🌙 Тёмная"],
-    default="☀ Светлая"
-)
-if theme == "☀ Светлая":
-    st.markdown(light_css, unsafe_allow_html=True)
-else:
-    st.markdown(dark_css, unsafe_allow_html=True)
+/* ===========================================
+   SIDEBAR
+=========================================== */
 
-st.set_page_config(page_title="Калькулятор доставки | Китай → РФ", page_icon="🚚", layout="wide")
-st.title("🚚 Калькулятор стоимости доставки сборного груза из Китая в Россию")
-st.markdown("Инструмент для транспортно-экспедиторских компаний"
-"""
-<style>
+section[data-testid="stSidebar"]{
+    background:#173A63;
+    width:260px !important;
+    min-width:260px !important;
+    max-width:260px !important;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    border-right:none;
+}
 
-html, body, [class*="st-"]{
-    font-family: 'Inter', sans-serif !important;
+section[data-testid="stSidebar"] > div{
+    padding-top:20px;
+}
+
+/* чтобы не перекрывал footer */
+section[data-testid="stSidebar"] > div:first-child{
+    height:calc(100vh - 70px);
+    overflow-y:auto;
+}
+
+/* Заголовки */
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3{
+
+    color:white;
+
+}
+
+/* Divider */
+
+section[data-testid="stSidebar"] hr{
+
+    border-color:rgba(255,255,255,.08);
+
+}
+
+/* Radio */
+
+div[role="radiogroup"] label{
+
+    background:transparent;
+
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    margin-bottom:6px;
+
+    transition:.2s;
+
+}
+
+div[role="radiogroup"] label:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
+
+div[role="radiogroup"] p{
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+/* выбранный пункт */
+
+div[role="radiogroup"] label:has(input:checked){
+
+    background:#F7941D;
+
+}
+
+div[role="radiogroup"] label:has(input:checked) p{
+
+    color:white;
+
+}
 
 .footer{
     position:fixed;
 
-    left:0;
+    left:260px;
     right:0;
     bottom:0;
 
@@ -92,11 +284,6 @@ html, body, [class*="st-"]{
 
     box-shadow:0 -4px 12px rgba(0,0,0,.05);
 }
-
-.main .block-container{
-    padding-bottom:80px;
-}
-
 .footer-left,
 .footer-right{
     color:#6B7280;
@@ -113,7 +300,48 @@ html, body, [class*="st-"]{
     padding-top:1rem;
 }
 </style>
-""", unsafe_allow_html=True)
+"""
+theme = st.segmented_control(
+    "",
+    ["☀ Светлая", "🌙 Тёмная"],
+    default="☀ Светлая"
+)
+if theme == "☀ Светлая":
+    st.markdown(light_css, unsafe_allow_html=True)
+else:
+    st.markdown(dark_css, unsafe_allow_html=True)
+
+st.set_page_config(
+    page_title="MSGCALC",
+    page_icon="🚚",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+with st.sidebar:
+
+    st.markdown("# 🚚 MSGCALC")
+
+    st.caption("Logistics Calculator")
+
+    st.divider()
+
+    page = st.radio(
+        "",
+        [
+            "📦 Калькулятор",
+            "📊 Результаты",
+            "🛃 Таможня",
+            "💵 Тарифы",
+            "⚙ Настройки"
+        ],
+        label_visibility="collapsed"
+    )
+
+    st.divider()
+
+    st.caption("Версия 1.0")
+st.set_page_config(page_title="Калькулятор доставки | Китай → РФ", page_icon="🚚", layout="wide")
+st.title("🚚 Калькулятор стоимости доставки сборного груза из Китая в Россию")
 
 # -------------------- ФУНКЦИЯ ПОЛУЧЕНИЯ КУРСА ЦБ --------------------
 @st.cache_data(ttl=3600)
