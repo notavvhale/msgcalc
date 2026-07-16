@@ -3,10 +3,8 @@ import xml.etree.ElementTree as ET
 import requests
 import streamlit as st
 
-from state import refresh, reset_tariffs, sync_state
+from state import refresh, reset_tariffs
 
-
-# -------------------- КУРСЫ ЦБ --------------------
 
 @st.cache_data(ttl=3600)
 def get_cbr_rates():
@@ -38,23 +36,29 @@ def get_cbr_rates():
         return rates
 
     except Exception:
-
         return None
 
 
-# -------------------- СТРАНИЦА --------------------
+def _update_tariff(field):
+    st.session_state.tariffs[field] = st.session_state[f"ui_{field}"]
+    refresh()
+
+
+def _update_rate(field):
+    st.session_state.rates[field] = st.session_state[f"ui_{field}"]
+    refresh()
+
 
 def show():
 
+    tariffs = st.session_state.tariffs
+    rates = st.session_state.rates
+
     st.header("💵 Прайс-лист")
 
-    st.markdown(
-        "*Измените тарифы — они сразу применятся к расчётам.*"
-    )
+    st.markdown("*Измените тарифы — они сразу применятся к расчётам.*")
 
     col1, col2 = st.columns(2)
-
-    # -------------------------------------------------
 
     with col1:
 
@@ -62,28 +66,40 @@ def show():
 
         st.number_input(
             "THC, USD/м³",
+            value=tariffs["thc_sea_usd_m3"],
             step=1.0,
-            key="tariff_thc_sea",
+            key="ui_thc_sea_usd_m3",
+            on_change=_update_tariff,
+            args=("thc_sea_usd_m3",),
         )
 
         st.number_input(
             "Doc fee, USD/shpt",
+            value=tariffs["doc_sea_usd"],
             step=1.0,
-            key="tariff_doc_sea",
+            key="ui_doc_sea_usd",
+            on_change=_update_tariff,
+            args=("doc_sea_usd",),
         )
 
         st.number_input(
             "R rail, USD/м³",
+            value=tariffs["r_rail_usd_m3"],
             step=0.1,
             format="%.1f",
-            key="tariff_r_rail",
+            key="ui_r_rail_usd_m3",
+            on_change=_update_tariff,
+            args=("r_rail_usd_m3",),
         )
 
         st.number_input(
             "R sea, USD/кг",
+            value=tariffs["r_sea_usd_kg"],
             step=0.1,
             format="%.1f",
-            key="tariff_r_sea",
+            key="ui_r_sea_usd_kg",
+            on_change=_update_tariff,
+            args=("r_sea_usd_kg",),
         )
 
         st.divider()
@@ -92,19 +108,23 @@ def show():
 
         st.number_input(
             "USD/кг",
+            value=tariffs["air_usd_kg"],
             step=0.5,
             format="%.1f",
-            key="tariff_air_kg",
+            key="ui_air_usd_kg",
+            on_change=_update_tariff,
+            args=("air_usd_kg",),
         )
 
         st.number_input(
             "ПРР, руб/кг",
+            value=tariffs["air_prr_rub_kg"],
             step=0.01,
             format="%.2f",
-            key="tariff_air_prr",
+            key="ui_air_prr_rub_kg",
+            on_change=_update_tariff,
+            args=("air_prr_rub_kg",),
         )
-
-    # -------------------------------------------------
 
     with col2:
 
@@ -112,21 +132,30 @@ def show():
 
         st.number_input(
             "USD/кг",
+            value=tariffs["rail_usd_kg"],
             step=0.1,
             format="%.1f",
-            key="tariff_rail_kg",
+            key="ui_rail_usd_kg",
+            on_change=_update_tariff,
+            args=("rail_usd_kg",),
         )
 
         st.number_input(
             "USD/м³",
+            value=tariffs["rail_usd_m3"],
             step=5.0,
-            key="tariff_rail_m3",
+            key="ui_rail_usd_m3",
+            on_change=_update_tariff,
+            args=("rail_usd_m3",),
         )
 
         st.number_input(
             "USD/shpt",
+            value=tariffs["rail_doc_usd"],
             step=1.0,
-            key="tariff_rail_doc",
+            key="ui_rail_doc_usd",
+            on_change=_update_tariff,
+            args=("rail_doc_usd",),
         )
 
         st.divider()
@@ -135,18 +164,22 @@ def show():
 
         st.number_input(
             "USD/кг",
+            value=tariffs["road_usd_kg"],
             step=0.1,
             format="%.1f",
-            key="tariff_road_kg",
+            key="ui_road_usd_kg",
+            on_change=_update_tariff,
+            args=("road_usd_kg",),
         )
 
         st.number_input(
             "USD/shpt",
+            value=tariffs["road_doc_usd"],
             step=1.0,
-            key="tariff_road_doc",
+            key="ui_road_doc_usd",
+            on_change=_update_tariff,
+            args=("road_doc_usd",),
         )
-
-    # -------------------------------------------------
 
     st.divider()
 
@@ -156,28 +189,23 @@ def show():
 
     with col_btn:
 
-        if st.button(
-            "🔄 Загрузить курс ЦБ",
-            key="btn_cbr",
-        ):
+        if st.button("🔄 Загрузить курс ЦБ"):
 
             cbr = get_cbr_rates()
 
             if cbr:
 
-                st.session_state.rate_usd = cbr["USD"]
-                st.session_state.rate_cny = cbr["CNY"]
+                rates["USD_RUB"] = cbr["USD"]
+                rates["CNY_RUB"] = cbr["CNY"]
                 st.session_state.cbr_date = cbr["date"]
 
-                st.success(
-                    f"Курс обновлён ({cbr['date']})"
-                )
+                refresh()
+
+                st.rerun()
 
             else:
 
-                st.error(
-                    "Не удалось получить курс ЦБ."
-                )
+                st.error("Не удалось получить курс ЦБ.")
 
     col_cur1, col_cur2 = st.columns(2)
 
@@ -185,57 +213,40 @@ def show():
 
         st.number_input(
             "USD / RUB",
+            value=rates["USD_RUB"],
             step=0.01,
             format="%.4f",
-            key="rate_usd",
+            key="ui_USD_RUB",
+            on_change=_update_rate,
+            args=("USD_RUB",),
         )
 
     with col_cur2:
 
         st.number_input(
             "CNY / RUB",
+            value=rates["CNY_RUB"],
             step=0.01,
             format="%.4f",
-            key="rate_cny",
+            key="ui_CNY_RUB",
+            on_change=_update_rate,
+            args=("CNY_RUB",),
         )
 
     if "cbr_date" in st.session_state:
-
-        st.caption(
-            f"Последнее обновление: {st.session_state.cbr_date}"
-        )
-
-    # -------------------------------------------------
+        st.caption(f"Последнее обновление: {st.session_state.cbr_date}")
 
     st.divider()
 
-    if st.button(
-        "🔄 Сбросить тарифы",
-        key="btn_reset",
-    ):
+    if st.button("🔄 Сбросить тарифы"):
 
         reset_tariffs()
 
-        st.session_state.rate_usd = 71.7318
-        st.session_state.rate_cny = 10.5831
-
-        st.session_state.tariff_thc_sea = 40.0
-        st.session_state.tariff_doc_sea = 80.0
-        st.session_state.tariff_r_rail = 1.9
-        st.session_state.tariff_r_sea = 0.8
-
-        st.session_state.tariff_air_kg = 5.0
-        st.session_state.tariff_air_prr = 6.06
-
-        st.session_state.tariff_rail_kg = 2.5
-        st.session_state.tariff_rail_m3 = 200.0
-        st.session_state.tariff_rail_doc = 50.0
-
-        st.session_state.tariff_road_kg = 2.5
-        st.session_state.tariff_road_doc = 70.0
+        st.session_state.rates["USD_RUB"] = 71.7318
+        st.session_state.rates["CNY_RUB"] = 10.5831
 
         if "cbr_date" in st.session_state:
             del st.session_state.cbr_date
 
-    sync_state()
-    refresh()
+        refresh()
+        st.rerun()

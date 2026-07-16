@@ -1,22 +1,36 @@
 import streamlit as st
 
-from state import refresh, sync_state
+from state import refresh
+
+
+def _update_enabled():
+    st.session_state.customs["enabled_flag"] = st.session_state.ui_enabled_flag
+    refresh()
+
+
+def _update_vat():
+    st.session_state.customs["vat_rate"] = st.session_state.ui_vat_rate
+    refresh()
+
+
+def _update_duty():
+    st.session_state.customs["duty_rate"] = st.session_state.ui_duty_rate
+    refresh()
 
 
 def show():
+
+    customs = st.session_state.customs
+    calc = st.session_state.calc
 
     st.header("Таможня")
 
     st.checkbox(
         "Рассчитать таможенные платежи",
-        key="customs_enabled",
+        value=customs["enabled_flag"],
+        key="ui_enabled_flag",
+        on_change=_update_enabled,
     )
-
-    sync_state()
-    refresh()
-
-    calc = st.session_state.calc
-    customs = st.session_state.customs
 
     if customs["enabled_flag"]:
 
@@ -28,22 +42,23 @@ def show():
             "Ставка НДС (%)",
             min_value=0.0,
             max_value=100.0,
+            value=float(customs["vat_rate"]),
             step=1.0,
             format="%.0f",
-            key="customs_vat_rate",
+            key="ui_vat_rate",
+            on_change=_update_vat,
         )
 
         st.number_input(
             "Ставка пошлины (%)",
             min_value=0.0,
             max_value=100.0,
+            value=float(customs["duty_rate"]),
             step=0.1,
             format="%.1f",
-            key="customs_duty_rate",
+            key="ui_duty_rate",
+            on_change=_update_duty,
         )
-
-        sync_state()
-        refresh()
 
         calc = st.session_state.calc
 

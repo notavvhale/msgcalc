@@ -1,8 +1,16 @@
 import streamlit as st
-from state import refresh, sync_state
+from state import refresh
+
+
+def _update(field):
+    """Сохранить значение виджета в cargo и пересчитать калькулятор."""
+    st.session_state.cargo[field] = st.session_state[f"ui_{field}"]
+    refresh()
 
 
 def show():
+
+    cargo = st.session_state.cargo
 
     col_input, col_input2 = st.columns([1, 1])
 
@@ -14,36 +22,52 @@ def show():
             "Вес одного места (кг)",
             min_value=0.1,
             step=1.0,
-            key="cargo_weight_per_unit",
+            value=cargo["weight_per_unit"],
+            key="ui_weight_per_unit",
+            on_change=_update,
+            args=("weight_per_unit",),
         )
 
         st.number_input(
             "Длина места (мм)",
             min_value=100,
             step=10,
-            key="cargo_length",
+            value=cargo["length"],
+            key="ui_length",
+            on_change=_update,
+            args=("length",),
         )
 
         st.number_input(
             "Ширина места (мм)",
             min_value=100,
             step=10,
-            key="cargo_width",
+            value=cargo["width"],
+            key="ui_width",
+            on_change=_update,
+            args=("width",),
         )
 
         st.number_input(
             "Высота места (мм)",
             min_value=100,
             step=10,
-            key="cargo_height",
-)
+            value=cargo["height"],
+            key="ui_height",
+            on_change=_update,
+            args=("height",),
+        )
 
         st.number_input(
             "Количество мест",
             min_value=1,
             step=1,
-            key="cargo_qty",
+            value=cargo["qty"],
+            key="ui_qty",
+            on_change=_update,
+            args=("qty",),
         )
+
     with col_input2:
 
         st.header("Товар")
@@ -52,12 +76,14 @@ def show():
             "Стоимость товара (USD)",
             min_value=0.0,
             step=100.0,
-            key="cargo_invoice_usd",
+            value=cargo["invoice_usd"],
+            key="ui_invoice_usd",
+            on_change=_update,
+            args=("invoice_usd",),
         )
-    sync_state()
-    refresh()
 
     calc = st.session_state.calc
+
     st.caption(f"В рублях: {calc['invoice_rub']:,.2f} ₽")
 
     st.metric(
