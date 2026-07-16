@@ -200,6 +200,18 @@ def calculate(cargo, tariffs, rates, customs):
             f"Море: {cw_sea_multi:.0f} кг / ЖД: {cw_rail_multi:.0f} кг"
         )
     ]
+   ################## ТАМОЖНЯ
+    duty_rate_decimal = customs["duty_rate"] / 100.0
+    vat_rate_decimal = customs["vat_rate"] / 100.0
+
+    t_val = (cargo["invoice_usd"] + cost_rail_usd) * rates["USD_RUB"]
+    duty = t_val * duty_rate_decimal
+    vat = (t_val + duty) * vat_rate_decimal
+    fee = calc_customs_fee(t_val)
+    total_customs = duty + vat + fee
+
+    full_cost = invoice_rub + cost_rail_rub + total_customs + insurance_rub
+
     return {
 
         "length_m": l_m,
@@ -228,5 +240,13 @@ def calculate(cargo, tariffs, rates, customs):
         "cw_sea_multi": cw_sea_multi,
         "cw_rail_multi": cw_rail_multi,
 
-        "results": results
+        "results": results,
+        "duty_rate_decimal": duty_rate_decimal,
+        "vat_rate_decimal": vat_rate_decimal,
+        "t_val": t_val,
+        "duty": duty,
+        "vat": vat,
+        "fee": fee,
+        "total_customs": total_customs,
+        "full_cost": full_cost,
     }

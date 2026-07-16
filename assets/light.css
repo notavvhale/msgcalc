@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body, [class*="st-"]{
+    font-family: 'Inter', sans-serif !important;
+}
+.stApp{
+    background:#fffef4;
+    color:#222222;
+}
+
+div[data-testid="stMetric"]{
+    background:#FFFFFF;
+    border:1px solid #E5E7EB;
+    border-radius:16px;
+}
+
+.stButton > button{
+    background:#D98A2B;
+    color:white;
+}
+/* ===========================================
+   SIDEBAR
+=========================================== */
+/* Скрыть кнопку сворачивания sidebar */
+[data-testid="stSidebarCollapseButton"] {
+    display: none;
+}
+section[data-testid="stSidebar"]{
+    background:#173A63;
+    width:260px !important;
+    min-width:260px !important;
+    max-width:260px !important;
+    flex-shrink: 0;
+    border-right:none;
+}
+
+section[data-testid="stSidebar"] > div{
+    padding-top:20px;
+}
+
+/* Заголовки */
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3{
+
+    color:white;
+
+}
+
+/* Divider */
+
+section[data-testid="stSidebar"] hr{
+
+    border-color:rgba(255,255,255,.08);
+
+}
+
+/* Radio */
+
+div[role="radiogroup"] label{
+
+    background:transparent;
+
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    margin-bottom:6px;
+
+    transition:.2s;
+
+}
+
+div[role="radiogroup"] label:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
+
+div[role="radiogroup"] p{
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+/* выбранный пункт */
+
+div[role="radiogroup"] label:has(input:checked){
+
+    background:#F7941D;
+
+}
+
+div[role="radiogroup"] label:has(input:checked) p{
+
+    color:white;
+
+}
+
+.footer{
+    position:fixed;
+
+    left:260px;
+    right:0;
+    bottom:0;
+
+    height:60px;
+
+    background:#FFFFFF;
+
+    border-top:1px solid #E5E7EB;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 32px;
+
+    z-index:9999;
+
+    box-shadow:0 -4px 12px rgba(0,0,0,.05);
+}
+.footer-left,
+.footer-right{
+    color:#6B7280;
+    font-size:14px;
+}
+    
+/* Верхняя панель */
+[data-testid="stHeader"]{
+    display:none;
+}
+
+/* Отступ сверху после скрытия */
+.block-container{
+    padding-top:1rem;
+}
