@@ -8,12 +8,19 @@ from state import refresh, reset_tariffs
 
 @st.cache_data(ttl=3600)
 def get_cbr_rates():
-    """Получить актуальные курсы USD и CNY с сайта ЦБ РФ"""
 
     url = "https://www.cbr.ru/scripts/XML_daily.asp"
 
     try:
-        response = requests.get(url, timeout=5)
+
+        response = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10,
+        )
+
+        response.raise_for_status()
+
         response.encoding = "windows-1251"
 
         root = ET.fromstring(response.text)
@@ -22,16 +29,17 @@ def get_cbr_rates():
 
         for valute in root.findall("Valute"):
 
-            code = valute.find("CharCode").text
-            value = float(valute.find("Value").text.replace(",", "."))
+            code = valute.findtext("CharCode")
 
-            if code == "USD":
-                rates["USD"] = value
+            if code not in ("USD", "CNY"):
+                continue
 
-            elif code == "CNY":
-                rates["CNY"] = value
+            nominal = int(valute.findtext("Nominal"))
+            value = float(valute.findtext("Value").replace(",", "."))
 
-        rates["date"] = root.get("Date")
+            rates[code] = value / nominal
+
+        rates["date"] = root.attrib["Date"]
 
         return rates
 
@@ -45,7 +53,8 @@ def _update_tariff(field):
 
 
 def _update_rate(field):
-    st.session_state.rates[field] = st.session_state[f"ui_{field}"]
+    rates = st.session_state.rates
+    rates[field] = st.session_state[f"ui_{field}"]
     refresh()
 
 
@@ -53,6 +62,11 @@ def show():
 
     tariffs = st.session_state.tariffs
     rates = st.session_state.rates
+    if "ui_USD_RUB" not in st.session_state:
+        st.session_state.ui_USD_RUB = rates["USD_RUB"]
+
+    if "ui_CNY_RUB" not in st.session_state:
+        st.session_state.ui_CNY_RUB = rates["CNY_RUB"]
 
     st.header("💵 Прайс-лист")
 
@@ -197,11 +211,16 @@ def show():
 
                 rates["USD_RUB"] = cbr["USD"]
                 rates["CNY_RUB"] = cbr["CNY"]
+
+            # Обновляем значения полей ввода
+                st.session_state["ui_USD_RUB"] = cbr["USD"]
+                st.session_state["ui_CNY_RUB"] = cbr["CNY"]
+
                 st.session_state.cbr_date = cbr["date"]
 
                 refresh()
 
-                st.rerun()
+                st.success(f"Курс обновлён ({cbr['date']})")
 
             else:
 
@@ -210,27 +229,15 @@ def show():
     col_cur1, col_cur2 = st.columns(2)
 
     with col_cur1:
-
-        st.number_input(
+        st.metric(
             "USD / RUB",
-            value=rates["USD_RUB"],
-            step=0.01,
-            format="%.4f",
-            key="ui_USD_RUB",
-            on_change=_update_rate,
-            args=("USD_RUB",),
+            f"{rates['USD_RUB']:.4f}"
         )
 
     with col_cur2:
-
-        st.number_input(
+        st.metric(
             "CNY / RUB",
-            value=rates["CNY_RUB"],
-            step=0.01,
-            format="%.4f",
-            key="ui_CNY_RUB",
-            on_change=_update_rate,
-            args=("CNY_RUB",),
+            f"{rates['CNY_RUB']:.4f}"
         )
 
     if "cbr_date" in st.session_state:
@@ -244,9 +251,9 @@ def show():
 
         st.session_state.rates["USD_RUB"] = 71.7318
         st.session_state.rates["CNY_RUB"] = 10.5831
-
+        st.session_state.ui_USD_RUB = 71.7318
+        st.session_state.ui_CNY_RUB = 10.5831
         if "cbr_date" in st.session_state:
             del st.session_state.cbr_date
 
         refresh()
-        st.rerun()

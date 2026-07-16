@@ -93,9 +93,9 @@ with st.sidebar:
 
     st.markdown("# 🚚 LTLCALC")
 
-    st.success(f"👤 {auth.name}")
-
     st.caption("Logistics Calculator")
+
+    st.caption("Версия 1.0")
 
     st.divider()
 
@@ -125,8 +125,8 @@ with st.sidebar:
         )
 
     st.divider()
-
-    st.caption("Версия 1.0")
+    
+    st.success(f"👤 {auth.name}")
 
     st.divider()
 
