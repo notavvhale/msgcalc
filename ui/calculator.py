@@ -3,7 +3,7 @@ import streamlit as st
 from state import refresh
 from services.tnved import get_by_code
 from ui.components.tnved_search import tnved_search
-
+from services.ai.ui_classifier import classify_product
 
 def _update(field):
     st.session_state.cargo[field] = st.session_state[f"ui_{field}"]
@@ -33,6 +33,36 @@ def show():
             on_change=_update,
             args=("product_name",),
         )
+        if st.button(
+            "🤖 Подобрать ТН ВЭД",
+            use_container_width=True,
+        ):
+
+            if not cargo["product_name"].strip():
+
+                st.warning("Введите название товара.")
+
+            else:
+
+                with st.spinner("ИИ подбирает код ТН ВЭД..."):
+
+                    result = classify_product(
+                        cargo["product_name"]
+                    )
+
+                if result:
+
+                    cargo["tnved"] = result["code"]
+
+                    st.session_state.ai_result = result
+
+                    refresh()
+
+                    st.rerun()
+
+                else:
+
+                    st.error("Не удалось подобрать код.")
 
         selected = tnved_search()
 
@@ -48,10 +78,32 @@ def show():
 
         if cargo["tnved"]:
             item = get_by_code(cargo["tnved"])
+            ai = st.session_state.get("ai_result")
+
+            if ai:
+
+                with st.container(border=True):
+
+                    st.subheader("🤖 Результат анализа")
+
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        st.metric("Код", ai["code"])
+
+                    with col2:
+                        st.metric(
+                            "Уверенность",
+                            f'{ai["confidence"]}%'
+                        )
+
+                    st.write(ai["reason"])
+
+                    with st.expander("Полное описание ТН ВЭД"):
+
+                        st.write(item["description"])
 
         if item:
-
-            st.success(item["description"])
 
             c1, c2 = st.columns(2)
 

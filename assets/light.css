@@ -102,6 +102,11 @@ div[role="radiogroup"] label:has(input:checked) p{
 
 }
 
+/* Убираем стрелку у Expander */
+span[data-testid="stIconMaterial"]{
+    display:none !important;
+}
+
 .footer{
     position:fixed;
 

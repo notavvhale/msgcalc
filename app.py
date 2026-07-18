@@ -45,8 +45,24 @@ initialize_tnved_database()
 bootstrap()
 init_state()
 #st.write(st.session_state)
-load_css("light.css")
 update_rates()
+
+# ------------------------------------------------------------
+# ТЕМА
+# ------------------------------------------------------------
+
+theme = st.segmented_control(
+    "",
+    ["☀ Светлая", "🌙 Тёмная"],
+    default="☀ Светлая",
+)
+
+if theme == "☀ Светлая":
+    load_css("light.css")
+else:
+    load_css("dark.css")
+
+
 
 # ------------------------------------------------------------
 # АВТОРИЗАЦИЯ ПО COOKIE
@@ -69,22 +85,6 @@ if not auth.authenticated:
     show_login()
 
     st.stop()
-
-
-# ------------------------------------------------------------
-# ТЕМА
-# ------------------------------------------------------------
-
-theme = st.segmented_control(
-    "",
-    ["☀ Светлая", "🌙 Тёмная"],
-    default="☀ Светлая",
-)
-
-if theme == "☀ Светлая":
-    load_css("light.css")
-else:
-    load_css("dark.css")
 
 
 # ------------------------------------------------------------
