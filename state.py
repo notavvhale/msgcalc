@@ -1,6 +1,5 @@
 import streamlit as st
 from formulas import calculate
-
 DEFAULT_TARIFFS = {
     "thc_sea_usd_m3": 40.0,
     "doc_sea_usd": 80.0,
@@ -27,6 +26,8 @@ DEFAULT_CUSTOMS = {
 }
 
 DEFAULT_CARGO = {
+    "product_name": "",
+    "tnved": "",
     "weight_per_unit": 500.0,
     "length": 800,
     "width": 1200,
@@ -44,7 +45,6 @@ def init_state():
     st.session_state.setdefault("rates", DEFAULT_RATES.copy())
     st.session_state.setdefault("tariffs", DEFAULT_TARIFFS.copy())
     st.session_state.setdefault("customs", DEFAULT_CUSTOMS.copy())
-
     refresh()
 
 

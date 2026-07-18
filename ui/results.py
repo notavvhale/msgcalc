@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-
+from export import build_pdf, build_excel
 
 def show():
 
@@ -71,3 +71,32 @@ def show():
         "Полная себестоимость",
         f"{calc['full_cost']:,.2f} ₽",
     )
+    excel = build_excel(
+    st.session_state.cargo,
+    st.session_state.calc,
+    st.session_state.tariffs,
+    st.session_state.rates,
+    st.session_state.customs,
+    )
+    pdf = build_pdf(
+    st.session_state.cargo,
+    st.session_state.calc,
+    st.session_state.tariffs,
+    st.session_state.rates,
+    st.session_state.customs,
+    )
+    col_pdf, col_excel = st.columns([1, 2])
+    with col_pdf:
+        st.download_button(
+            "📄 Скачать PDF",
+            pdf,
+            "LTLCALC_commercial_offer.pdf",
+            "application/pdf",
+        )
+    with col_excel:
+        st.download_button(
+            "📊 Скачать Excel",
+            excel,
+            "LTLCALC-calculation_excel.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )

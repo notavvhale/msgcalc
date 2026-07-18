@@ -64,9 +64,9 @@ div[role="radiogroup"] label{
 
     border-radius:12px;
 
-    padding:10px 14px;
-
-    margin-bottom:6px;
+    padding:6px 12px;
+    margin-bottom:2px;
+    min-height:34px;
 
     transition:.2s;
 

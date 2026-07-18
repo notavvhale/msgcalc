@@ -1,9 +1,11 @@
 import streamlit as st
+
 from state import refresh
+from services.tnved import get_by_code
+from ui.components.tnved_search import tnved_search
 
 
 def _update(field):
-    """Сохранить значение виджета в cargo и пересчитать калькулятор."""
     st.session_state.cargo[field] = st.session_state[f"ui_{field}"]
     refresh()
 
@@ -11,12 +13,59 @@ def _update(field):
 def show():
 
     cargo = st.session_state.cargo
+    calc = st.session_state.calc
 
-    col_input, col_input2 = st.columns([1, 1])
+    left, right = st.columns([1, 1])
 
-    with col_input:
+    # ======================================================
+    # Левая колонка
+    # ======================================================
+
+    with left:
 
         st.header("Параметры груза")
+
+        st.text_input(
+            "📦 Название товара",
+            value=cargo["product_name"],
+            key="ui_product_name",
+            placeholder="Например: Электросамокат Kugoo M4",
+            on_change=_update,
+            args=("product_name",),
+        )
+
+        selected = tnved_search()
+
+        if selected:
+
+            if cargo["tnved"] != selected["code"]:
+
+                cargo["tnved"] = selected["code"]
+
+                refresh()
+
+        item = None
+
+        if cargo["tnved"]:
+            item = get_by_code(cargo["tnved"])
+
+        if item:
+
+            st.success(item["description"])
+
+            c1, c2 = st.columns(2)
+
+            with c1:
+                st.metric(
+                    "Пошлина",
+                    item["duty_text"],
+                )
+
+            with c2:
+                st.metric(
+                    "НДС",
+                    f'{item["vat"] or 20}%',
+                )
 
         st.number_input(
             "Вес одного места (кг)",
@@ -68,7 +117,11 @@ def show():
             args=("qty",),
         )
 
-    with col_input2:
+    # ======================================================
+    # Правая колонка
+    # ======================================================
+
+    with right:
 
         st.header("Товар")
 
@@ -82,16 +135,14 @@ def show():
             args=("invoice_usd",),
         )
 
-    calc = st.session_state.calc
+        st.caption(f"В рублях: {calc['invoice_rub']:,.2f} ₽")
 
-    st.caption(f"В рублях: {calc['invoice_rub']:,.2f} ₽")
+        st.metric(
+            "Общий вес партии",
+            f"{calc['total_weight']:.0f} кг",
+        )
 
-    st.metric(
-        "Общий вес партии",
-        f"{calc['total_weight']:.0f} кг",
-    )
-
-    st.metric(
-        "Объём груза",
-        f"{calc['volume']:.3f} м³",
-    )
+        st.metric(
+            "Объём груза",
+            f"{calc['volume']:.3f} м³",
+        )

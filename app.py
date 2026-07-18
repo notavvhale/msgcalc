@@ -6,7 +6,7 @@ from state import init_state
 
 from ui.calculator import show as show_calculator
 from ui.lastmile import show as show_lastmile
-from ui.tariffs import show as show_tariffs
+from ui.tariffs import show as show_tariffs, update_rates
 from ui.customs import show as show_customs
 from ui.results import show as show_results
 from ui.footer import show as show_footer
@@ -18,7 +18,8 @@ from auth.login_page import show as show_login
 from auth.database import initialize_database, initialize_sessions
 from auth.bootstrap import bootstrap
 from auth.cookies import get_session, delete_session
-
+from services.tnved_database import initialize_database as initialize_tnved_database
+from services.import_tnved import import_tnved
 
 # ------------------------------------------------------------
 # НАСТРОЙКИ СТРАНИЦЫ
@@ -40,11 +41,12 @@ st.title("🚚 Калькулятор стоимости доставки сбо
 
 initialize_database()
 initialize_sessions()
+initialize_tnved_database()
 bootstrap()
 init_state()
-
+#st.write(st.session_state)
 load_css("light.css")
-
+update_rates()
 
 # ------------------------------------------------------------
 # АВТОРИЗАЦИЯ ПО COOKIE
@@ -124,11 +126,12 @@ with st.sidebar:
             label_visibility="collapsed",
         )
 
+    st.caption("Поддержка")
+    st.caption("support@ltlcalc.ru")
+    st.caption("+7 (995) 555-35-35")
     st.divider()
     
     st.success(f"👤 {auth.name}")
-
-    st.divider()
 
     if st.button(
         "🚪 Выйти",
