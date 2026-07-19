@@ -1,28 +1,50 @@
-import os
+import requests
 
-from dotenv import load_dotenv
-from openai import OpenAI
+from services.ai.auth import get_token
+import urllib3
 
-load_dotenv()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-client = OpenAI(
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1",
-)
+MODEL = "GigaChat-2-Lite"
 
 
-def ask(prompt: str) -> str:
+def _request(prompt: str, token: str):
 
-    response = client.chat.completions.create(
-        model="google/gemini-2.5-flash",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-        temperature=0,
-        max_tokens=300,
+    response = requests.post(
+        "https://gigachat.devices.sberbank.ru/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        json={
+            "model": MODEL,
+            "temperature": 0.1,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        },
+        verify=False,
+        timeout=120,
     )
 
-    return response.choices[0].message.content or ""
+    return response
+
+
+def ask(prompt: str):
+
+    token = get_token()
+
+    response = _request(prompt, token)
+
+    # Если токен истёк — автоматически обновляем
+    if response.status_code == 401:
+        token = get_token(force=True)
+        response = _request(prompt, token)
+
+    response.raise_for_status()
+
+    return response.json()["choices"][0]["message"]["content"]
