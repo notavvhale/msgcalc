@@ -5,8 +5,17 @@ from services.tnved import get_by_code
 from ui.components.tnved_search import tnved_search
 from services.ai.ui_classifier import classify_product
 
+
 def _update(field):
-    st.session_state.cargo[field] = st.session_state[f"ui_{field}"]
+    key = f"ui_{field}"
+
+    if "cargo" not in st.session_state:
+        return
+
+    if key not in st.session_state:
+        return
+
+    st.session_state.cargo[field] = st.session_state[key]
     refresh()
 
 
@@ -33,8 +42,9 @@ def show():
             on_change=_update,
             args=("product_name",),
         )
+
         if st.button(
-            "🤖 Подобрать ТН ВЭД",
+            "🤖",
             use_container_width=True,
         ):
 
@@ -44,25 +54,29 @@ def show():
 
             else:
 
-                with st.spinner("ИИ подбирает код ТН ВЭД..."):
+                with st.spinner("ИИ анализирует товар..."):
 
-                    result = classify_product(
+                    results = classify_product(
                         cargo["product_name"]
                     )
 
-                if result:
+                if results:
 
-                    cargo["tnved"] = result["code"]
+                    st.session_state.ai_results = results
 
-                    st.session_state.ai_result = result
+                    # автоматически выбираем лучший вариант
+                    cargo["tnved"] = results[0]["code"]
 
                     refresh()
-
                     st.rerun()
 
                 else:
 
-                    st.error("Не удалось подобрать код.")
+                    st.error("Не удалось подобрать код ТН ВЭД.")
+
+        # ======================================================
+        # Поиск вручную
+        # ======================================================
 
         selected = tnved_search()
 
@@ -74,50 +88,132 @@ def show():
 
                 refresh()
 
-        item = None
+        # ======================================================
+        # Результаты AI
+        # ======================================================
 
-        if cargo["tnved"]:
-            item = get_by_code(cargo["tnved"])
-            ai = st.session_state.get("ai_result")
+        ai_results = st.session_state.get("ai_results", [])
 
-            if ai:
+        if ai_results:
 
-                with st.container(border=True):
+            st.subheader("🤖 AI подобрал несколько вариантов")
 
-                    st.subheader("🤖 Результат анализа")
+            def confidence_icon(confidence):
 
-                    col1, col2 = st.columns(2)
+                if confidence >= 90:
+                    return "⭐"
 
-                    with col1:
-                        st.metric("Код", ai["code"])
+                if confidence >= 70:
+                    return "🟢"
 
-                    with col2:
-                        st.metric(
-                            "Уверенность",
-                            f'{ai["confidence"]}%'
-                        )
+                if confidence >= 50:
+                    return "🟡"
+
+                return "⚪"
+
+            for i, ai in enumerate(ai_results):
+
+                short_description = ai["description"].replace("\n", " ")
+
+                if len(short_description) > 70:
+                    short_description = short_description[:70] + "..."
+
+                left_info, right_button = st.columns([6, 1])
+
+                with left_info:
+
+                    st.markdown(
+                        f"""
+**{confidence_icon(ai["confidence"])} {ai["code"]}**
+
+{short_description}
+
+Совпадение: **{ai["confidence"]}%**
+"""
+                    )
+
+                with right_button:
+
+                    if cargo["tnved"] == ai["code"]:
+
+                        st.success("✓")
+
+                    else:
+
+                        if st.button(
+                            "Выбрать",
+                            key=f"use_ai_{i}",
+                            use_container_width=True,
+                        ):
+
+                            cargo["tnved"] = ai["code"]
+
+                            refresh()
+
+                            st.rerun()
+
+                with st.expander("Подробнее", expanded=False):
 
                     st.write(ai["reason"])
 
-                    with st.expander("Полное описание ТН ВЭД"):
+                    c1, c2 = st.columns(2)
 
-                        st.write(item["description"])
+                    with c1:
+
+                        st.metric(
+                            "Пошлина",
+                            ai["duty_text"],
+                        )
+
+                    with c2:
+
+                        st.metric(
+                            "НДС",
+                            f'{ai["vat"] or 20}%'
+                        )
+
+                    st.write("**Полное описание ТН ВЭД**")
+
+                    st.write(ai["description"])
+
+                st.divider()
+        # ======================================================
+        # Информация по выбранному коду
+        # ======================================================
+
+        item = None
+
+        if cargo["tnved"]:
+
+            item = get_by_code(cargo["tnved"])
 
         if item:
+
+            st.divider()
+
+            st.subheader("Выбранный код ТН ВЭД")
+
+            st.code(item["code"])
 
             c1, c2 = st.columns(2)
 
             with c1:
+
                 st.metric(
                     "Пошлина",
                     item["duty_text"],
                 )
 
             with c2:
+
                 st.metric(
                     "НДС",
-                    f'{item["vat"] or 20}%',
+                    f'{item["vat"] or 20}%'
                 )
+
+        # ======================================================
+        # Параметры груза
+        # ======================================================
 
         st.number_input(
             "Вес одного места (кг)",

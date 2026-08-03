@@ -19,11 +19,10 @@ from auth.database import initialize_database, initialize_sessions
 from auth.bootstrap import bootstrap
 from auth.cookies import get_session, delete_session
 from services.tnved_database import initialize_database as initialize_tnved_database
-from services.import_tnved import import_tnved
+from ui.header import show as show_header
+from auth.service import AuthService
 
-# ------------------------------------------------------------
-# НАСТРОЙКИ СТРАНИЦЫ
-# ------------------------------------------------------------
+auth = AuthService()
 
 st.set_page_config(
     page_title="LTLCALC",
@@ -32,156 +31,41 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.title("🚚 Калькулятор стоимости доставки сборного груза из Китая в Россию")
-
-
-# ------------------------------------------------------------
-# ИНИЦИАЛИЗАЦИЯ
-# ------------------------------------------------------------
+load_css("light.css")
 
 initialize_database()
 initialize_sessions()
 initialize_tnved_database()
 bootstrap()
 init_state()
-#st.write(st.session_state)
 update_rates()
 
-# ------------------------------------------------------------
-# ТЕМА
-# ------------------------------------------------------------
-
-theme = st.segmented_control(
-    "",
-    ["☀ Светлая", "🌙 Тёмная"],
-    default="☀ Светлая",
-)
-
-if theme == "☀ Светлая":
-    load_css("light.css")
-else:
-    load_css("dark.css")
-
-
-
-# ------------------------------------------------------------
-# АВТОРИЗАЦИЯ ПО COOKIE
-# ------------------------------------------------------------
-
 if not auth.authenticated:
-
     token = get_session()
-
     if token:
         auth.restore(token)
 
-
-# ------------------------------------------------------------
-# ЛОГИН
-# ------------------------------------------------------------
-
 if not auth.authenticated:
-
     show_login()
-
     st.stop()
+page = show_header(auth)
 
-
-# ------------------------------------------------------------
-# БОКОВАЯ ПАНЕЛЬ
-# ------------------------------------------------------------
-
-with st.sidebar:
-
-    st.markdown("# 🚚 LTLCALC")
-
-    st.caption("Logistics Calculator")
-
-    st.caption("Версия 1.0")
-
-    st.divider()
-
-    if is_admin():
-
-        page = st.radio(
-            "",
-            [
-                "📦 Калькулятор",
-                "🚛 Последняя миля",
-                "📊 Результаты",
-                "🛃 Таможня",
-                "💵 Тарифы",
-                "⚙ Админ-панель",
-            ],
-            label_visibility="collapsed",
-        )
-
-    elif is_user():
-
-        page = st.radio(
-            "",
-            [
-                "📦 Калькулятор",
-            ],
-            label_visibility="collapsed",
-        )
-
-    st.caption("Поддержка")
-    st.caption("support@ltlcalc.ru")
-    st.caption("+7 (995) 555-35-35")
-    st.divider()
-    
-    st.success(f"👤 {auth.name}")
-
-    if st.button(
-        "🚪 Выйти",
-        use_container_width=True,
-    ):
-
-        delete_session()
-
-        auth.logout()
-
-        st.rerun()
-
-
-# ------------------------------------------------------------
-# СТРАНИЦЫ
-# ------------------------------------------------------------
-
-if page == "📦 Калькулятор":
+if page=="Расчёт":
     show_calculator()
-
-elif page == "🚛 Последняя миля":
+elif page=="🚛 Последняя миля":
     show_lastmile()
-
-elif page == "💵 Тарифы":
-    show_tariffs()
-
-elif page == "🛃 Таможня":
-    show_customs()
-
-elif page == "📊 Результаты":
+elif page=="📊 Результаты":
     show_results()
-
-elif page == "⚙ Админ-панель":
+elif page=="🛃 Таможня":
+    show_customs()
+elif page=="💵 Тарифы":
+    show_tariffs()
+elif page=="⚙ Админ-панель":
     show_admin()
-
-
-# ------------------------------------------------------------
-# ПОДВАЛ
-# ------------------------------------------------------------
 
 show_footer()
 
-st.divider()
-
-rates = st.session_state.rates
-
-st.caption(
-    "© 2026 | Калькулятор разработан в рамках выпускной квалификационной работы"
-)
-
+rates=st.session_state.rates
 st.caption(
     f"Курс ЦБ: USD = {rates['USD_RUB']:.4f} руб., "
     f"CNY = {rates['CNY_RUB']:.4f} руб."

@@ -1,147 +1,2584 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* ==========================================================
+   LTLCALC LIGHT THEME
+   Foundation
+   Version 2.0
+========================================================== */
 
-html, body, [class*="st-"]{
-    font-family: 'Inter', sans-serif !important;
-}
-.stApp{
-    background:#fffef4;
-    color:#222222;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ==========================================================
+   CSS VARIABLES
+========================================================== */
+
+:root{
+
+    /* Colors */
+
+    --bg:#F5F7FA;
+    --bg-secondary:#EEF2F7;
+
+    --surface:#FFFFFF;
+    --surface-hover:#FBFCFD;
+    --surface-active:#F4F7FB;
+
+    --border:#E4E9F1;
+    --border-dark:#D6DEE8;
+
+    --primary:#1F4E79;
+    --primary-hover:#295F91;
+    --primary-light:#EAF3FB;
+
+    --success:#16A34A;
+    --success-light:#ECFDF3;
+
+    --warning:#F59E0B;
+    --warning-light:#FFF8E8;
+
+    --danger:#DC2626;
+    --danger-light:#FDECEC;
+
+    --text:#1F2937;
+    --text-light:#4B5563;
+    --text-muted:#6B7280;
+    --text-disabled:#9CA3AF;
+
+    /* Radius */
+
+    --radius-xs:6px;
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:18px;
+    --radius-xl:22px;
+
+    /* Shadows */
+
+    --shadow-xs:
+        0 1px 2px rgba(15,23,42,.04);
+
+    --shadow-sm:
+        0 3px 10px rgba(15,23,42,.05);
+
+    --shadow-md:
+        0 8px 24px rgba(15,23,42,.07);
+
+    --shadow-lg:
+        0 16px 40px rgba(15,23,42,.10);
+
+    /* Layout */
+
+    --container-padding:28px;
+
+    --gap-xs:6px;
+    --gap-sm:10px;
+    --gap-md:16px;
+    --gap-lg:24px;
+    --gap-xl:32px;
+
+    /* Animation */
+
+    --transition-fast:.15s ease;
+    --transition:.22s ease;
+    --transition-slow:.35s ease;
 }
 
-div[data-testid="stMetric"]{
-    background:#FFFFFF;
-    border:1px solid #E5E7EB;
-    border-radius:16px;
+/* ==========================================================
+   RESET
+========================================================== */
+
+*,
+*::before,
+*::after{
+    box-sizing:border-box;
 }
 
-.stButton > button{
-    background:#D98A2B;
+html{
+
+    scroll-behavior:smooth;
+
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+
+}
+
+body{
+
+    margin:0;
+    padding:0;
+
+}
+
+html,
+body,
+[class*="st-"]{
+
+    font-family:"Inter",sans-serif!important;
+
+}
+
+img{
+
+    max-width:100%;
+    display:block;
+
+}
+
+button,
+input,
+textarea,
+select{
+
+    font:inherit;
+
+}
+
+*{
+
+    outline:none;
+
+}
+
+*:focus{
+
+    outline:none!important;
+    box-shadow:none!important;
+
+}
+
+::selection{
+
+    background:var(--primary);
     color:white;
+
 }
-/* ===========================================
-   SIDEBAR
-=========================================== */
-/* Скрыть кнопку сворачивания sidebar */
-[data-testid="stSidebarCollapseButton"] {
-    display: none;
+
+/* ==========================================================
+   STREAMLIT CLEANUP
+========================================================== */
+
+/* Streamlit Header */
+
+[data-testid="stHeader"]{
+
+    display:none!important;
+
 }
+
+/* Deploy */
+
+[data-testid="stToolbar"]{
+
+    display:none!important;
+
+}
+
+/* Decoration */
+
+[data-testid="stDecoration"]{
+
+    display:none!important;
+
+}
+
+/* Menu */
+
+#MainMenu{
+
+    display:none!important;
+
+}
+
+/* Footer */
+
+footer{
+
+    display:none!important;
+
+}
+
+/* Anchor links */
+
+a.anchor-link{
+
+    display:none!important;
+
+}
+
+/* Material Icons */
+
+span[data-testid="stIconMaterial"]{
+
+    display:none!important;
+
+}
+
+/* SVG inside summary */
+
+details summary svg{
+
+    display:none!important;
+
+}
+
+/* Sidebar (пока скрываем полностью) */
+
 section[data-testid="stSidebar"]{
-    background:#173A63;
-    width:260px !important;
-    min-width:260px !important;
-    max-width:260px !important;
-    flex-shrink: 0;
-    border-right:none;
-}
 
-section[data-testid="stSidebar"] > div{
-    padding-top:20px;
-}
-
-/* Заголовки */
-
-section[data-testid="stSidebar"] h1,
-section[data-testid="stSidebar"] h2,
-section[data-testid="stSidebar"] h3{
-
-    color:white;
+    display:none!important;
 
 }
 
-/* Divider */
+/* Remove empty space */
 
-section[data-testid="stSidebar"] hr{
+[data-testid="stAppViewContainer"]{
 
-    border-color:rgba(255,255,255,.08);
+    margin-top:0!important;
 
 }
 
-/* Radio */
+/* ==========================================================
+   TYPOGRAPHY
+========================================================== */
 
-div[role="radiogroup"] label{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+
+    color:var(--text);
+
+    font-weight:700;
+
+    letter-spacing:-0.02em;
+
+    margin-top:0;
+
+}
+
+h1{
+
+    font-size:32px;
+
+}
+
+h2{
+
+    font-size:26px;
+
+}
+
+h3{
+
+    font-size:20px;
+
+}
+
+h4{
+
+    font-size:18px;
+
+}
+
+p{
+
+    color:var(--text-light);
+
+    line-height:1.6;
+
+    margin:0;
+
+}
+
+small{
+
+    color:var(--text-muted);
+
+}
+
+.stCaption{
+
+    color:var(--text-muted)!important;
+
+    font-size:13px;
+
+}
+
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:11px;
+    height:11px;
+
+}
+
+::-webkit-scrollbar-track{
 
     background:transparent;
 
-    border-radius:12px;
+}
 
-    padding:6px 12px;
-    margin-bottom:2px;
-    min-height:34px;
+::-webkit-scrollbar-thumb{
 
-    transition:.2s;
+    background:#C8D1DD;
+
+    border-radius:999px;
+
+    border:2px solid transparent;
+
+    background-clip:padding-box;
 
 }
 
-div[role="radiogroup"] label:hover{
+::-webkit-scrollbar-thumb:hover{
 
-    background:rgba(255,255,255,.08);
+    background:#AEB9C8;
+
+    background-clip:padding-box;
 
 }
 
-div[role="radiogroup"] p{
+/* ==========================================================
+   APPLICATION LAYOUT
+========================================================== */
 
-    color:white;
+.stApp{
 
-    font-size:15px;
+    background:var(--bg);
+
+    color:var(--text);
+
+}
+
+.main{
+
+    background:transparent;
+
+}
+
+/* Vertical spacing */
+
+div[data-testid="stVerticalBlock"]{
+
+    gap:0px;
+
+}
+
+/* Columns */
+
+div[data-testid="column"]{
+
+    gap:18px;
+
+}
+
+/* ==========================================================
+   GENERIC CONTAINERS
+========================================================== */
+
+.card{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+    padding:22px;
+
+    transition:var(--transition);
+
+}
+
+.card:hover{
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.surface{
+
+    background:var(--surface);
+
+}
+
+.surface-alt{
+
+    background:var(--surface-hover);
+
+}
+
+.border{
+
+    border:1px solid var(--border);
+
+}
+
+.rounded{
+
+    border-radius:var(--radius-lg);
+
+}
+
+.shadow{
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.shadow-lg{
+
+    box-shadow:var(--shadow-lg);
+
+}
+
+/* ==========================================================
+   FORMS
+========================================================== */
+
+/* ----------------------------------------------------------
+   Labels
+---------------------------------------------------------- */
+
+label,
+.stMarkdown label{
+
+    color:var(--text);
+
+    font-weight:600;
+
+    font-size:14px;
+
+    margin-bottom:6px;
+
+}
+
+/* ----------------------------------------------------------
+   TextInput
+---------------------------------------------------------- */
+
+.stTextInput input{
+
+    height:44px;
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:var(--surface)!important;
+
+    color:var(--text)!important;
+
+    padding:0 14px!important;
+
+    transition:var(--transition);
+
+}
+
+.stTextInput input:hover{
+
+    border-color:var(--border-dark)!important;
+
+}
+
+.stTextInput input:focus{
+
+    border-color:var(--primary)!important;
+
+    background:white!important;
+
+}
+
+/* Placeholder */
+
+.stTextInput input::placeholder{
+
+    color:var(--text-disabled)!important;
+
+}
+
+/* ----------------------------------------------------------
+   NumberInput
+---------------------------------------------------------- */
+
+.stNumberInput input{
+
+    height:44px;
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:var(--surface)!important;
+
+    color:var(--text)!important;
+
+    padding:0 14px!important;
+
+    transition:var(--transition);
+
+}
+
+.stNumberInput input:hover{
+
+    border-color:var(--border-dark)!important;
+
+}
+
+.stNumberInput input:focus{
+
+    border-color:var(--primary)!important;
+
+}
+
+/* Number buttons */
+
+.stNumberInput button{
+
+    border:none!important;
+
+    background:transparent!important;
+
+    color:var(--muted)!important;
+
+}
+
+.stNumberInput button:hover{
+
+    color:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   TextArea
+---------------------------------------------------------- */
+
+.stTextArea textarea{
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:white!important;
+
+    color:var(--text)!important;
+
+    padding:12px 14px!important;
+
+    transition:var(--transition);
+
+    resize:vertical;
+
+    min-height:90px;
+
+}
+
+.stTextArea textarea:focus{
+
+    border-color:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Selectbox
+---------------------------------------------------------- */
+
+.stSelectbox div[data-baseweb="select"] > div{
+
+    min-height:44px;
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:white!important;
+
+    transition:var(--transition);
+
+}
+
+.stSelectbox div[data-baseweb="select"] > div:hover{
+
+    border-color:var(--border-dark)!important;
+
+}
+
+.stSelectbox div[data-baseweb="select"] > div:focus-within{
+
+    border-color:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   MultiSelect
+---------------------------------------------------------- */
+
+.stMultiSelect div[data-baseweb="select"] > div{
+
+    min-height:44px;
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:white!important;
+
+}
+
+.stMultiSelect span{
+
+    border-radius:999px!important;
+
+    background:var(--primary-light)!important;
+
+    color:var(--primary)!important;
+
+    font-weight:600;
+
+}
+
+/* ----------------------------------------------------------
+   Checkbox
+---------------------------------------------------------- */
+
+.stCheckbox{
+
+    padding:2px 0;
+
+}
+
+.stCheckbox label{
 
     font-weight:500;
 
 }
 
-/* выбранный пункт */
+.stCheckbox [data-baseweb="checkbox"]{
 
-div[role="radiogroup"] label:has(input:checked){
-
-    background:#F7941D;
+    transform:scale(1.05);
 
 }
 
-div[role="radiogroup"] label:has(input:checked) p{
+.stCheckbox svg{
+
+    color:white!important;
+
+}
+
+/* ----------------------------------------------------------
+   Radio
+---------------------------------------------------------- */
+
+.stRadio label{
+
+    font-weight:500;
+
+}
+
+.stRadio [role="radiogroup"]{
+
+    gap:10px;
+
+}
+
+/* ----------------------------------------------------------
+   Segmented Control
+---------------------------------------------------------- */
+
+div[role="radiogroup"]{
+
+    gap:6px;
+
+}
+
+div[role="radiogroup"] label{
+
+    min-height:42px;
+
+    padding:0 18px;
+
+    border-radius:12px!important;
+
+    border:1px solid var(--border)!important;
+
+    background:white;
+
+    transition:var(--transition);
+
+    font-weight:600;
+
+}
+
+div[role="radiogroup"] label:hover{
+
+    background:var(--surface-hover);
+
+    border-color:var(--border-dark)!important;
+
+}
+
+div[role="radiogroup"] label[data-selected="true"]{
+
+    background:var(--primary)!important;
+
+    color:white!important;
+
+    border-color:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Slider
+---------------------------------------------------------- */
+
+.stSlider{
+
+    padding-top:6px;
+
+}
+
+.stSlider [role="slider"]{
+
+    background:var(--primary)!important;
+
+    border:none!important;
+
+    width:18px!important;
+
+    height:18px!important;
+
+}
+
+.stSlider [data-baseweb="slider"] > div:nth-child(2){
+
+    background:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Date Input
+---------------------------------------------------------- */
+
+.stDateInput{
+
+    width:100%;
+
+}
+
+.stDateInput > div{
+
+    border-radius:var(--radius-md)!important;
+
+}
+
+.stDateInput input{
+
+    height:44px;
+
+    border-radius:var(--radius-md)!important;
+
+    border:1px solid var(--border)!important;
+
+    background:white!important;
+
+}
+
+.stDateInput input:focus{
+
+    border-color:var(--primary)!important;
+
+}
+
+/* Calendar button */
+
+.stDateInput button{
+
+    border:none!important;
+
+    background:transparent!important;
+
+    color:var(--muted)!important;
+
+}
+
+.stDateInput button:hover{
+
+    color:var(--primary)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Disabled controls
+---------------------------------------------------------- */
+
+input:disabled,
+textarea:disabled{
+
+    background:#F3F4F6!important;
+
+    color:var(--text-disabled)!important;
+
+    cursor:not-allowed;
+
+    opacity:1!important;
+
+}
+
+/* ----------------------------------------------------------
+   Validation
+---------------------------------------------------------- */
+
+input:invalid{
+
+    border-color:var(--danger)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Form spacing
+---------------------------------------------------------- */
+
+.stTextInput,
+.stNumberInput,
+.stSelectbox,
+.stMultiSelect,
+.stTextArea,
+.stCheckbox,
+.stRadio,
+.stDateInput,
+.stSlider{
+
+    margin-bottom:10px;
+
+}
+/* ==========================================================
+   COMPONENTS
+========================================================== */
+
+/* ----------------------------------------------------------
+   Buttons
+---------------------------------------------------------- */
+
+.stButton{
+    width:100%;
+}
+
+.stButton>button{
+
+    width:100%;
+
+    min-height:44px;
+
+    border:none!important;
+
+    border-radius:var(--radius-md)!important;
+
+    background:var(--primary)!important;
+
+    color:white!important;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:var(--transition);
+
+    cursor:pointer;
+
+    box-shadow:var(--shadow-xs);
+
+}
+
+.stButton>button:hover{
+
+    background:var(--primary-hover)!important;
+
+    box-shadow:var(--shadow-sm);
+
+    transform:translateY(-1px);
+
+}
+
+.stButton>button:active{
+
+    transform:translateY(0);
+
+    box-shadow:none;
+
+}
+
+.stButton>button:disabled{
+
+    background:#D1D5DB!important;
+
+    color:#9CA3AF!important;
+
+    cursor:not-allowed;
+
+}
+
+/* Secondary */
+
+.secondary-button{
+
+    background:white!important;
+
+    color:var(--text)!important;
+
+    border:1px solid var(--border)!important;
+
+}
+
+.secondary-button:hover{
+
+    background:var(--surface-hover)!important;
+
+}
+
+/* Danger */
+
+.danger-button{
+
+    background:var(--danger)!important;
+
+}
+
+.danger-button:hover{
+
+    background:#B91C1C!important;
+
+}
+
+/* ----------------------------------------------------------
+   Metric
+---------------------------------------------------------- */
+
+div[data-testid="stMetric"]{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    padding:18px;
+
+    box-shadow:var(--shadow-sm);
+
+    transition:var(--transition);
+
+}
+
+div[data-testid="stMetric"]:hover{
+
+    box-shadow:var(--shadow-md);
+
+}
+
+div[data-testid="stMetricLabel"]{
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+div[data-testid="stMetricValue"]{
+
+    color:var(--text);
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+div[data-testid="stMetricDelta"]{
+
+    font-size:13px;
+
+}
+
+/* ----------------------------------------------------------
+   Expander
+---------------------------------------------------------- */
+
+details{
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    background:white;
+
+    overflow:hidden;
+
+    transition:var(--transition);
+
+}
+
+details:hover{
+
+    border-color:var(--border-dark);
+
+}
+
+details summary{
+
+    padding:14px 18px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    list-style:none;
+
+    background:white;
+
+}
+
+details[open] summary{
+
+    border-bottom:1px solid var(--border);
+
+}
+
+details>*:not(summary){
+
+    padding:18px;
+
+}
+
+/* ----------------------------------------------------------
+   Alerts
+---------------------------------------------------------- */
+
+div[data-baseweb="notification"]{
+
+    border-radius:var(--radius-md)!important;
+
+    border:none!important;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.stSuccess{
+
+    background:var(--success-light)!important;
+
+}
+
+.stWarning{
+
+    background:var(--warning-light)!important;
+
+}
+
+.stError{
+
+    background:var(--danger-light)!important;
+
+}
+
+.stInfo{
+
+    background:var(--primary-light)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Progress
+---------------------------------------------------------- */
+
+.stProgress{
+
+    margin:6px 0;
+
+}
+
+.stProgress>div{
+
+    height:8px!important;
+
+    border-radius:999px!important;
+
+    background:#E5E7EB!important;
+
+}
+
+.stProgress>div>div{
+
+    background:linear-gradient(
+        90deg,
+        var(--primary),
+        #3B82F6
+    )!important;
+
+    border-radius:999px!important;
+
+}
+
+/* ----------------------------------------------------------
+   Spinner
+---------------------------------------------------------- */
+
+div[data-testid="stSpinner"]{
+
+    padding:20px;
+
+    text-align:center;
+
+}
+
+div[data-testid="stSpinner"] svg{
+
+    color:var(--primary)!important;
+
+    width:28px;
+
+    height:28px;
+
+}
+
+/* ----------------------------------------------------------
+   Badge
+---------------------------------------------------------- */
+
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.badge-primary{
+
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+}
+
+.badge-success{
+
+    background:var(--success-light);
+
+    color:var(--success);
+
+}
+
+.badge-warning{
+
+    background:var(--warning-light);
+
+    color:var(--warning);
+
+}
+
+.badge-danger{
+
+    background:var(--danger-light);
+
+    color:var(--danger);
+
+}
+
+/* ----------------------------------------------------------
+   Divider
+---------------------------------------------------------- */
+
+hr{
+
+    border:none;
+
+    height:1px;
+
+    background:var(--border);
+
+    margin:24px 0;
+
+}
+
+div[data-testid="stDivider"]{
+
+    margin:20px 0;
+
+}
+
+/* ----------------------------------------------------------
+   Containers
+---------------------------------------------------------- */
+
+.stContainer{
+
+    border-radius:var(--radius-lg);
+
+}
+
+/* ----------------------------------------------------------
+   Empty State
+---------------------------------------------------------- */
+
+.empty-state{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:48px 24px;
+
+    text-align:center;
+
+    color:var(--text-muted);
+
+}
+
+.empty-state h3{
+
+    margin-top:12px;
+
+    margin-bottom:8px;
+
+}
+
+.empty-state p{
+
+    max-width:480px;
+
+}
+
+/* ----------------------------------------------------------
+   Hover Animation
+---------------------------------------------------------- */
+
+.card,
+div[data-testid="stMetric"],
+details{
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+
+}
+
+.card:hover,
+div[data-testid="stMetric"]:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================================
+   TABLES
+========================================================== */
+
+/* ----------------------------------------------------------
+   DataFrame
+---------------------------------------------------------- */
+
+div[data-testid="stDataFrame"]{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* Внутренний контейнер */
+
+div[data-testid="stDataFrame"] > div{
+
+    border:none!important;
+
+}
+
+/* ----------------------------------------------------------
+   Data Editor
+---------------------------------------------------------- */
+
+div[data-testid="stDataEditor"]{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* ----------------------------------------------------------
+   Glide Data Grid
+---------------------------------------------------------- */
+
+.glide-data-grid{
+
+    font-family:"Inter",sans-serif!important;
+
+    background:white!important;
+
+}
+
+/* ----------------------------------------------------------
+   Header
+---------------------------------------------------------- */
+
+.glide-data-grid .gdg-header{
+
+    background:#F8FAFC!important;
+
+    border-bottom:1px solid var(--border)!important;
+
+}
+
+.glide-data-grid .gdg-header-cell{
+
+    color:var(--text);
+
+    font-weight:700;
+
+    font-size:13px;
+
+}
+
+/* ----------------------------------------------------------
+   Cells
+---------------------------------------------------------- */
+
+.glide-data-grid .gdg-cell{
+
+    font-size:13px;
+
+    color:var(--text);
+
+    border-bottom:1px solid #F1F5F9!important;
+
+}
+
+/* ----------------------------------------------------------
+   Zebra
+---------------------------------------------------------- */
+
+.glide-data-grid .gdg-row:nth-child(even){
+
+    background:#FCFCFD;
+
+}
+
+/* ----------------------------------------------------------
+   Hover
+---------------------------------------------------------- */
+
+.glide-data-grid .gdg-row:hover{
+
+    background:var(--primary-light)!important;
+
+}
+
+/* ----------------------------------------------------------
+   Selected
+---------------------------------------------------------- */
+
+.glide-data-grid .gdg-cell-selected{
+
+    background:#DCEEFF!important;
+
+    outline:none!important;
+
+}
+
+/* ----------------------------------------------------------
+   Editable Cell
+---------------------------------------------------------- */
+
+.glide-data-grid input{
+
+    border:none!important;
+
+    background:white!important;
+
+    font-family:"Inter",sans-serif!important;
+
+}
+
+/* ----------------------------------------------------------
+   Numeric Alignment
+---------------------------------------------------------- */
+
+.numeric{
+
+    text-align:right;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+/* ----------------------------------------------------------
+   Currency
+---------------------------------------------------------- */
+
+.currency{
+
+    text-align:right;
+
+    font-weight:600;
+
+    font-variant-numeric:tabular-nums;
+
+    white-space:nowrap;
+
+}
+
+/* ----------------------------------------------------------
+   Status Cell
+---------------------------------------------------------- */
+
+.status-success{
+
+    color:var(--success);
+
+    font-weight:600;
+
+}
+
+.status-warning{
+
+    color:var(--warning);
+
+    font-weight:600;
+
+}
+
+.status-danger{
+
+    color:var(--danger);
+
+    font-weight:600;
+
+}
+
+/* ----------------------------------------------------------
+   HTML Table
+---------------------------------------------------------- */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+}
+
+thead{
+
+    background:#F8FAFC;
+
+}
+
+thead th{
+
+    padding:12px 14px;
+
+    border-bottom:1px solid var(--border);
+
+    color:var(--text);
+
+    font-size:13px;
+
+    font-weight:700;
+
+    text-align:left;
+
+}
+
+tbody td{
+
+    padding:12px 14px;
+
+    border-bottom:1px solid #F1F5F9;
+
+    color:var(--text);
+
+    font-size:13px;
+
+}
+
+tbody tr:nth-child(even){
+
+    background:#FCFCFD;
+
+}
+
+tbody tr:hover{
+
+    background:var(--primary-light);
+
+}
+
+/* ----------------------------------------------------------
+   Sticky Header
+---------------------------------------------------------- */
+
+thead{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:5;
+
+}
+
+/* ----------------------------------------------------------
+   Pagination
+---------------------------------------------------------- */
+
+.pagination{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding-top:16px;
+
+}
+
+.pagination button{
+
+    min-width:34px;
+
+    height:34px;
+
+    border:1px solid var(--border);
+
+    background:white;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.pagination button:hover{
+
+    background:var(--primary-light);
+
+    border-color:var(--primary);
+
+}
+
+.pagination button.active{
+
+    background:var(--primary);
 
     color:white;
 
+    border-color:var(--primary);
+
 }
 
-/* Убираем стрелку у Expander */
-span[data-testid="stIconMaterial"]{
-    display:none !important;
+/* ----------------------------------------------------------
+   Empty Table
+---------------------------------------------------------- */
+
+.table-empty{
+
+    padding:40px;
+
+    text-align:center;
+
+    color:var(--text-muted);
+
 }
 
-.footer{
-    position:fixed;
+/* ----------------------------------------------------------
+   Dense Mode
+---------------------------------------------------------- */
 
-    left:260px;
-    right:0;
-    bottom:0;
+.table-dense thead th{
 
-    height:60px;
+    padding:8px 12px;
 
-    background:#FFFFFF;
+}
 
-    border-top:1px solid #E5E7EB;
+.table-dense tbody td{
+
+    padding:8px 12px;
+
+}
+
+/* ----------------------------------------------------------
+   Monospace Numbers
+---------------------------------------------------------- */
+
+.number{
+
+    font-variant-numeric:tabular-nums;
+
+    font-feature-settings:"tnum";
+
+}
+
+/* ==========================================================
+   LTLCALC UI
+========================================================== */
+
+
+/* ----------------------------------------------------------
+   Result Card
+---------------------------------------------------------- */
+
+.result-card{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:28px;
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.result-card-title{
+
+    color:var(--text-muted);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.result-card-value{
+
+    font-size:42px;
+
+    font-weight:800;
+
+    color:var(--primary);
+
+    line-height:1;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+.result-card-subtitle{
+
+    margin-top:12px;
+
+    color:var(--text-light);
+
+}
+
+/* ----------------------------------------------------------
+   Cost Cards
+---------------------------------------------------------- */
+
+.cost-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+}
+
+.cost-card{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    transition:var(--transition);
+
+}
+
+.cost-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.cost-title{
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+}
+
+.cost-value{
+
+    margin-top:8px;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+.cost-success{
+
+    color:var(--success);
+
+}
+
+.cost-warning{
+
+    color:var(--warning);
+
+}
+
+.cost-danger{
+
+    color:var(--danger);
+
+}
+
+/* ----------------------------------------------------------
+   Summary Block
+---------------------------------------------------------- */
+
+.summary-block{
+
+    display:grid;
+
+    gap:14px;
+
+    background:#F8FAFC;
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:22px;
+
+}
+
+.summary-row{
 
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
 
-    padding:0 32px;
+    padding-bottom:10px;
 
-    z-index:9999;
+    border-bottom:1px dashed #E5E7EB;
 
-    box-shadow:0 -4px 12px rgba(0,0,0,.05);
-}
-.footer-left,
-.footer-right{
-    color:#6B7280;
-    font-size:14px;
-}
-    
-/* Верхняя панель */
-[data-testid="stHeader"]{
-    display:none;
 }
 
-/* Отступ сверху после скрытия */
-.block-container{
-    padding-top:1rem;
+.summary-row:last-child{
+
+    border-bottom:none;
+
+    padding-bottom:0;
+
+}
+
+.summary-label{
+
+    color:var(--text-muted);
+
+}
+
+.summary-value{
+
+    font-weight:700;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+/* ----------------------------------------------------------
+   Currency Card
+---------------------------------------------------------- */
+
+.currency-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:18px;
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:18px 22px;
+
+}
+
+.currency-item{
+
+    flex:1;
+
+}
+
+.currency-name{
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+}
+
+.currency-value{
+
+    margin-top:4px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+/* ----------------------------------------------------------
+   TN VED
+---------------------------------------------------------- */
+
+.tnved-card{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-left:5px solid var(--primary);
+
+    border-radius:18px;
+
+    padding:22px;
+
+}
+
+.tnved-code{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+    font-family:monospace;
+
+}
+
+.tnved-name{
+
+    margin-top:10px;
+
+    color:var(--text);
+
+    line-height:1.6;
+
+}
+
+/* ----------------------------------------------------------
+   AI Answer
+---------------------------------------------------------- */
+
+.ai-card{
+
+    background:linear-gradient(
+        180deg,
+        #FFFFFF,
+        #F8FBFE
+    );
+
+    border:1px solid #D7E7F6;
+
+    border-radius:22px;
+
+    padding:24px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.ai-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:16px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+.ai-answer{
+
+    line-height:1.8;
+
+    color:var(--text);
+
+}
+
+.ai-answer h1,
+.ai-answer h2,
+.ai-answer h3{
+
+    margin-top:22px;
+
+    margin-bottom:12px;
+
+}
+
+.ai-answer ul{
+
+    padding-left:22px;
+
+}
+
+.ai-answer li{
+
+    margin-bottom:8px;
+
+}
+
+/* ----------------------------------------------------------
+   Info Chips
+---------------------------------------------------------- */
+
+.info-chip{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:6px 12px;
+
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* ----------------------------------------------------------
+   Footer
+---------------------------------------------------------- */
+
+.footer{
+
+    margin-top:32px;
+
+    padding:18px 0;
+
+    border-top:1px solid var(--border);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+}
+
+.footer strong{
+
+    color:var(--text);
+
+}
+
+/* ==========================================================
+   POLISH
+   Final UI refinement
+========================================================== */
+
+/* ----------------------------------------------------------
+   Global Animation
+---------------------------------------------------------- */
+
+*{
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        box-shadow .18s ease;
+
+}
+
+/* ----------------------------------------------------------
+   Card Hover
+---------------------------------------------------------- */
+
+.card,
+.cost-card,
+.result-card,
+.tnved-card,
+.ai-card,
+.currency-card,
+.summary-block,
+div[data-testid="stMetric"],
+details{
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+
+}
+
+.card:hover,
+.cost-card:hover,
+.currency-card:hover,
+.tnved-card:hover,
+.ai-card:hover,
+.summary-block:hover,
+div[data-testid="stMetric"]:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:var(--shadow-md);
+
+    border-color:var(--border-dark);
+
+}
+
+/* ----------------------------------------------------------
+   Interactive Elements
+---------------------------------------------------------- */
+
+button,
+input,
+textarea,
+select{
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        box-shadow .18s ease;
+
+}
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+/* ----------------------------------------------------------
+   Table Hover
+---------------------------------------------------------- */
+
+tbody tr{
+
+    transition:
+        background .14s ease;
+
+}
+
+tbody tr:hover{
+
+    background:var(--primary-light);
+
+}
+
+/* ----------------------------------------------------------
+   Links
+---------------------------------------------------------- */
+
+a{
+
+    color:var(--primary);
+
+    text-decoration:none;
+
+    transition:.18s;
+
+}
+
+a:hover{
+
+    color:var(--primary-hover);
+
+}
+
+/* ----------------------------------------------------------
+   Consistent Radius
+---------------------------------------------------------- */
+
+.card,
+.result-card,
+.cost-card,
+.summary-block,
+.currency-card,
+.ai-card,
+.tnved-card,
+details,
+.stButton>button,
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox div[data-baseweb="select"]>div,
+.stTextArea textarea,
+.stDateInput input{
+
+    border-radius:16px!important;
+
+}
+
+/* Large hero cards */
+
+.result-card{
+
+    border-radius:22px!important;
+
+}
+
+/* ----------------------------------------------------------
+   Consistent Shadows
+---------------------------------------------------------- */
+
+.card,
+.result-card,
+.cost-card,
+.summary-block,
+.currency-card,
+.ai-card,
+.tnved-card{
+
+    box-shadow:
+
+        0 1px 2px rgba(15,23,42,.03),
+
+        0 10px 28px rgba(15,23,42,.06);
+
+}
+
+/* ----------------------------------------------------------
+   Dense Interface
+---------------------------------------------------------- */
+
+/* Reduce vertical gaps */
+
+div[data-testid="stVerticalBlock"]{
+
+    gap:14px;
+
+}
+
+div[data-testid="column"]{
+
+    gap:14px;
+
+}
+
+/* Less spacing after markdown */
+
+.element-container{
+
+    margin-bottom:8px;
+
+}
+
+/* Forms */
+
+.stTextInput,
+.stNumberInput,
+.stSelectbox,
+.stMultiSelect,
+.stDateInput,
+.stSlider,
+.stCheckbox,
+.stRadio{
+
+    margin-bottom:8px;
+
+}
+
+/* Expander */
+
+details summary{
+
+    padding:12px 16px;
+
+}
+
+details>*:not(summary){
+
+    padding:16px;
+
+}
+
+/* ----------------------------------------------------------
+   Desktop Workspace
+---------------------------------------------------------- */
+
+.block-container {
+    max-width: 1700px;
+    padding-top: 5px;
+    padding-bottom: 36px;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+}
+
+/* ----------------------------------------------------------
+   1920×1080 Optimization
+---------------------------------------------------------- */
+
+/* On FullHD use compact spacing */
+
+@media (min-width:1600px){
+
+    .block-container{
+
+        max-width:1760px;
+
+        padding-left:30px;
+
+        padding-right:30px;
+
+    }
+
+    .cost-grid{
+
+        gap:18px;
+
+    }
+
+    .result-card{
+
+        padding:30px;
+
+    }
+
+}
+
+/* ----------------------------------------------------------
+   UltraWide
+---------------------------------------------------------- */
+
+@media (min-width:2200px){
+
+    .block-container{
+
+        max-width:2100px;
+
+    }
+
+}
+
+/* ----------------------------------------------------------
+   Laptop
+---------------------------------------------------------- */
+
+@media (max-width:1400px){
+
+    .block-container{
+
+        padding-left:18px;
+
+        padding-right:18px;
+
+    }
+
+    .cost-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+/* ----------------------------------------------------------
+   Scroll Comfort
+---------------------------------------------------------- */
+
+html{
+
+    scroll-padding-top:20px;
+
+}
+
+/* ----------------------------------------------------------
+   Numeric Typography
+---------------------------------------------------------- */
+
+.result-card-value,
+.cost-value,
+.summary-value,
+.currency-value,
+.number,
+.currency{
+
+    font-feature-settings:"tnum";
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+/* ----------------------------------------------------------
+   Selection
+---------------------------------------------------------- */
+
+input::selection,
+textarea::selection{
+
+    background:rgba(31,78,121,.18);
+
+}
+
+/* ----------------------------------------------------------
+   Images
+---------------------------------------------------------- */
+
+img{
+
+    border-radius:12px;
+
+}
+
+/* ----------------------------------------------------------
+   Loading State
+---------------------------------------------------------- */
+
+.loading{
+
+    opacity:.65;
+
+    pointer-events:none;
+
+}
+
+/* ----------------------------------------------------------
+   Print
+---------------------------------------------------------- */
+
+@media print{
+
+    body{
+
+        background:white!important;
+
+    }
+
+    .card,
+    .result-card,
+    .summary-block{
+
+        box-shadow:none!important;
+
+        border:1px solid #D1D5DB;
+
+    }
+
+}
+
+/* ----------------------------------------------------------
+   Final Polish
+---------------------------------------------------------- */
+
+.stApp{
+
+    color:var(--text);
+
+    background:var(--bg);
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    transition:background .2s ease;
+
+}
+
+::selection{
+
+    background:rgba(31,78,121,.18);
+
+    color:inherit;
+
+}
+
+/* ==========================================================
+   HEADER
+==========================================================*/
+
+.topbar-title{
+    font-size:15px;
+    font-weight:600;
+    line-height:28px;
+}
+
+.topbar-item,
+.topbar-user{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    height:28px;
+
+    font-size:12px;
+
+    white-space:nowrap;
+}
+
+div[data-testid="stButton"] > button{
+    height:26px !important;
+    min-height:26px !important;
+
+    padding:0 !important;
+
+    border-radius:6px;
+
+    font-size:13px;
+}
+
+/* ==========================================================
+   TOP TABS
+==========================================================*/
+
+div[data-testid="stSegmentedControl"]{
+
+    margin-top:4px;
+    margin-bottom:8px;
+
+}
+
+/* контейнер */
+
+div[data-testid="stSegmentedControl"] > div{
+
+    display:flex;
+
+    gap:0;
+
+    background:#fff;
+
+    border-bottom:1px solid var(--border);
+
+    padding:0;
+
+}
+
+/* кнопка */
+
+div[data-testid="stSegmentedControl"] button{
+
+    background:transparent !important;
+
+    border:none !important;
+
+    border-radius:0 !important;
+
+    height:34px;
+
+    padding:0 18px;
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+    font-weight:500;
+
+    transition:.15s;
+
+}
+
+/* hover */
+
+div[data-testid="stSegmentedControl"] button:hover{
+
+    background:#f7f9fc !important;
+
+    color:var(--text);
+
+}
+
+/* активная */
+
+div[data-testid="stSegmentedControl"] button[data-selected="true"]{
+
+    color:var(--primary) !important;
+
+    font-weight:600;
+
+    border-bottom:2px solid var(--primary) !important;
+
+}
+div[data-testid="stMarkdownContainer"] > p{
+    margin:0;
 }

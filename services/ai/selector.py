@@ -4,10 +4,10 @@ from services.ai.client import ask
 from services.ai.parser import parse_json
 
 
-def select_best(product: str, candidates: list[dict]):
+def rank_candidates(product: str, candidates: list[dict]):
 
     if not candidates:
-        return None
+        return []
 
     candidates_text = ""
 
@@ -16,7 +16,8 @@ def select_best(product: str, candidates: list[dict]):
         candidates_text += f"""
 Вариант {i}
 
-Код: {item["code"]}
+Код:
+{item["code"]}
 
 Описание:
 {item["description"]}
@@ -33,29 +34,42 @@ def select_best(product: str, candidates: list[dict]):
     prompt = f"""
 Ты являешься экспертом по классификации товаров ТН ВЭД ЕАЭС.
 
-Пользователь хочет определить код товара.
+Необходимо определить наиболее подходящие коды ТН ВЭД.
 
-Товар:
+Описание товара:
 
 {product}
 
-Ниже приведены возможные варианты.
+Ниже приведён список возможных вариантов.
 
 Используй ТОЛЬКО эти варианты.
 
-Никогда не придумывай новый код.
+Запрещено:
 
-Выбери наиболее подходящий.
+- придумывать новые коды;
+- изменять существующие коды;
+- возвращать варианты, которых нет в списке.
 
-Ответь ТОЛЬКО JSON.
+Необходимо:
 
-Формат ответа:
+1. Проанализировать каждый вариант.
+2. Отсортировать варианты от наиболее подходящего к менее подходящему.
+3. Вернуть максимум 5 вариантов.
 
-{{
-    "code":"8471300000",
-    "confidence":97,
-    "reason":"краткое объяснение"
-}}
+Ответ вернуть ТОЛЬКО в формате JSON.
+
+[
+    {{
+        "code":"8471300000",
+        "confidence":96,
+        "reason":"Краткое объяснение выбора."
+    }},
+    {{
+        "code":"8471410000",
+        "confidence":74,
+        "reason":"Почему тоже подходит."
+    }}
+]
 
 Варианты:
 
@@ -65,5 +79,8 @@ def select_best(product: str, candidates: list[dict]):
     response = ask(prompt)
 
     data = parse_json(response)
+
+    if isinstance(data, dict):
+        data = [data]
 
     return data

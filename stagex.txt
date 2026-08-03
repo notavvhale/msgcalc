@@ -1,0 +1,71 @@
+Часть 1 — Foundation
+CSS variables (:root)
+Reset
+Streamlit Cleanup
+Typography
+Scrollbar
+Общий layout
+Контейнеры
+
+≈120 строк
+
+Часть 2 — Forms
+TextInput
+NumberInput
+TextArea
+Selectbox
+Multiselect
+Checkbox
+Radio
+Segmented Control
+Slider
+DateInput
+
+≈150 строк
+
+Часть 3 — Components
+Buttons
+Metric
+Expander
+Alerts
+Progress
+Spinner
+Badge
+Divider
+
+≈150 строк
+
+Часть 4 — Tables
+DataFrame
+Data Editor
+Table
+Hover
+Header
+Pagination
+
+≈150 строк
+
+Часть 5 — LTLCALC UI
+
+Именно под твой проект:
+
+Header
+Result cards
+Cost cards
+Summary block
+Currency block
+TN VED block
+AI answer block
+Footer
+
+≈200 строк
+
+Часть 6 — Polish
+Hover-анимации
+Тени
+Radius
+Плотность интерфейса
+Desktop spacing
+1920×1080 оптимизация
+
+≈100 строк

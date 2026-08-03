@@ -5,7 +5,7 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-MODEL = "GigaChat-2-Lite"
+MODEL = "GigaChat-2"
 
 
 def _request(prompt: str, token: str):
