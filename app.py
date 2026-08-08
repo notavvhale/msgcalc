@@ -52,7 +52,7 @@ page = show_header(auth)
 
 if page=="Расчёт":
     show_calculator()
-elif page=="🚛 Последняя миля":
+elif page=="YFcnh":
     show_lastmile()
 elif page=="📊 Результаты":
     show_results()
@@ -60,7 +60,7 @@ elif page=="🛃 Таможня":
     show_customs()
 elif page=="💵 Тарифы":
     show_tariffs()
-elif page=="⚙ Админ-панель":
+elif page=="Настройки":
     show_admin()
 
 show_footer()
