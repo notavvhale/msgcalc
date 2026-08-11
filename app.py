@@ -5,6 +5,7 @@ from assets.styles import load_css
 from state import init_state
 
 from ui.calculator import show as show_calculator
+from ui.history import show as show_history
 from ui.lastmile import show as show_lastmile
 from ui.tariffs import show as show_tariffs, update_rates
 from ui.customs import show as show_customs
@@ -19,6 +20,7 @@ from auth.database import initialize_database, initialize_sessions
 from auth.bootstrap import bootstrap
 from auth.cookies import get_session, delete_session
 from services.tnved_database import initialize_database as initialize_tnved_database
+from services.history_database import initialize_database as initialize_history_database
 from ui.header import show as show_header
 from auth.service import AuthService
 
@@ -36,6 +38,7 @@ load_css("light.css")
 initialize_database()
 initialize_sessions()
 initialize_tnved_database()
+initialize_history_database()
 bootstrap()
 init_state()
 update_rates()
@@ -48,17 +51,19 @@ if not auth.authenticated:
 if not auth.authenticated:
     show_login()
     st.stop()
+
+st.session_state.user_id = auth.user["id"]
 page = show_header(auth)
 
 if page=="Расчёт":
     show_calculator()
-elif page=="YFcnh":
-    show_lastmile()
+elif page=="История":
+    show_history()
 elif page=="📊 Результаты":
     show_results()
 elif page=="🛃 Таможня":
     show_customs()
-elif page=="💵 Тарифы":
+elif page=="Тарифы":
     show_tariffs()
 elif page=="Настройки":
     show_admin()
