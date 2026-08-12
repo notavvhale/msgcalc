@@ -59,9 +59,9 @@ if page=="Расчёт":
     show_calculator()
 elif page=="История":
     show_history()
-elif page=="📊 Результаты":
+elif page=="Тест2":
     show_results()
-elif page=="🛃 Таможня":
+elif page=="Тест1":
     show_customs()
 elif page=="Тарифы":
     show_tariffs()

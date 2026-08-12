@@ -2676,11 +2676,11 @@ div[data-testid="stButton"] > button {
 
     border-radius: 4px !important;
 
-    border: 1px solid var(--border) !important;
+    border: 1px solid var(--primary) !important;
 
-    background: var(--surface) !important;
+    background: var(--primary) !important;
 
-    color: var(--text-light) !important;
+    color: #ffffff !important;
 
     font-size: 13px !important;
     font-weight: 500 !important;
@@ -2690,6 +2690,12 @@ div[data-testid="stButton"] > button {
     white-space: nowrap;
 
     margin: 0 !important;
+}
+
+/* Текст внутри Streamlit-кнопки */
+div[data-testid="stVerticalBlock"]:has(.ltl-header)
+div[data-testid="stButton"] > button * {
+    color: #ffffff !important;
 }
 
 div[data-testid="stVerticalBlock"]:has(.ltl-header)
@@ -3255,4 +3261,233 @@ div[data-testid="stButton"] > button {
     border-radius: 6px !important;
     font-size: 12px !important;
     line-height: 30px !important;
+}
+.calc-selected-tnved-code {
+    font-size: 16px;
+    font-weight: 600;
+    color: #536dfe;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+
+.calc-selected-tnved-description {
+    font-size: 12px;
+    line-height: 1.35;
+    color: #687385;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+
+    margin-bottom: 10px;
+}
+
+/* ============================================================
+   AI ALTERNATIVE TN VED
+   ============================================================ */
+
+.calc-ai-alternatives {
+    width: 100%;
+    overflow: hidden;
+}
+
+.calc-ai-alternative-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 45px;
+    column-gap: 8px;
+
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+
+    margin-bottom: 2px;
+
+    overflow: hidden;
+}
+
+.calc-ai-alternative-left {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.calc-ai-alternative-code {
+    height: 14px;
+
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calc-ai-alternative-description {
+    height: 14px;
+
+    font-size: 9px;
+    line-height: 14px;
+
+    color: #687385;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calc-ai-alternative-confidence {
+    height: 30px;
+
+    font-size: 12px;
+    line-height: 30px;
+    font-weight: 600;
+
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   USER MENU
+   ===================================================== */
+
+.user-menu-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+
+/* =====================================================
+   USER POPOVER
+   ===================================================== */
+
+div[data-testid="stPopover"] button {
+    height: 22px !important;
+    min-height: 22px !important;
+
+    width: auto !important;
+
+    padding: 0 5px !important;
+    margin: 0 !important;
+
+    border: none !important;
+    border-radius: 4px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    color: var(--text-light) !important;
+
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 22px !important;
+}
+
+
+/* Текст пользователя */
+div[data-testid="stPopover"] button p,
+div[data-testid="stPopover"] button span {
+    color: var(--text-light) !important;
+}
+
+
+/* Hover пользователя */
+div[data-testid="stPopover"] button:hover {
+    background: var(--surface-active) !important;
+    color: var(--text-light) !important;
+}
+
+div[data-testid="stPopover"] button:hover p,
+div[data-testid="stPopover"] button:hover span {
+    color: var(--text-light) !important;
+}
+
+.st-key-main-navigation
+div[data-testid="stButton"] > button * {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.st-key-main-navigation
+div[data-testid="stButton"] > button:hover {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+.st-key-main-navigation
+div[data-testid="stButton"] > button:hover * {
+    color: #ffffff !important;
+}
+
+/* =====================================================
+   AUTHORIZATION PAGE
+   ===================================================== */
+
+.auth-page {
+    width: 100%;
+    text-align: center;
+    margin-top: 80px;
+}
+
+.auth-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 24px;
+}
+
+
+/* Центральная форма */
+
+.st-key-login_form {
+    max-width: 520px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+
+/* Поля */
+
+.st-key-login_form input {
+    border-radius: 9px !important;
+}
+
+
+/* Кнопка */
+
+.st-key-login_form button[kind="primaryFormSubmit"],
+.st-key-login_form button {
+    border-radius: 8px !important;
+}
+
+
+/* Если кнопка должна быть синей */
+
+.st-key-login_form button[kind="primaryFormSubmit"] {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+.st-key-login_form button[kind="primaryFormSubmit"] p,
+.st-key-login_form button[kind="primaryFormSubmit"] span {
+    color: #ffffff !important;
+}
+
+.stButton > button,
+.stButton > button p,
+.stButton > button span {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.stButton > button:hover,
+.stButton > button:hover p,
+.stButton > button:hover span {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
 }

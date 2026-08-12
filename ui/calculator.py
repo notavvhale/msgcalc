@@ -205,7 +205,7 @@ def _show_product_column(cargo):
     if st.button(
         "🤖 Подобрать код ТН ВЭД",
         use_container_width=True,
-        key="classify_product",
+        key="tnved_recommend_button",
     ):
 
         product_name = cargo["product_name"].strip()
@@ -259,44 +259,44 @@ def _show_product_column(cargo):
     if cargo["tnved"]:
 
         item = get_by_code(cargo["tnved"])
-
+        
         if item:
 
+            description = (
+                item.get("description")
+                or "Описание отсутствует"
+            )
+
             st.markdown(
-                """
+                f"""
                 <div class="calc-selected-tnved">
                     <div class="calc-selected-tnved-label">
                         Выбранный код
                     </div>
+                    <div class="calc-selected-tnved-code">
+                        {item["code"]}
+                    </div>
+                    <div class="calc-selected-tnved-description">
+                        {description}
+                    </div>
+                </div>
                 """,
                 unsafe_allow_html=True,
-            )
-
-            st.code(
-                item["code"],
-                language=None,
             )
 
             c1, c2 = st.columns(2)
 
             with c1:
-
                 st.metric(
                     "Пошлина",
                     item["duty_text"],
                 )
 
             with c2:
-
                 st.metric(
                     "НДС",
                     f'{item["vat"] or 20}%',
                 )
-
-            st.markdown(
-                "</div>",
-                unsafe_allow_html=True,
-            )
 
 
 # ============================================================
@@ -735,26 +735,38 @@ def _show_info_column(cargo, calc):
                 unsafe_allow_html=True,
             )
 
-            for i, ai in enumerate(
-                ai_results[1:4],
-                start=1,
-            ):
+            alternatives_html = ""
 
-                c1, c2 = st.columns(
-                    [4, 1],
-                )
+            for ai in ai_results[1:4]:
 
-                with c1:
+                description = str(
+                    ai.get("description") or ""
+                ).replace("\n", " ").strip()
 
-                    st.markdown(
-                        f"**{ai['code']}**"
-                    )
+                alternatives_html += f"""
+                <div class="calc-ai-alternative-row">
+                    <div class="calc-ai-alternative-left">
+                        <div class="calc-ai-alternative-code">
+                            {ai["code"]}
+                        </div>
+                        <div class="calc-ai-alternative-description">
+                            {description}
+                        </div>
+                    </div>
+                    <div class="calc-ai-alternative-confidence">
+                        {ai["confidence"]}%
+                    </div>
+                </div>
+                """
 
-                with c2:
-
-                    st.markdown(
-                        f"**{ai['confidence']}%**"
-                    )
+            st.markdown(
+                f"""
+                <div class="calc-ai-alternatives">
+                    {alternatives_html}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
     else:
 
@@ -1016,8 +1028,8 @@ def show():
 
     product_col, result_col, info_col = st.columns(
         [
-            1.0,
-            1.45,
+            2,
+            1.5,
             0.90,
         ],
         gap="medium",
