@@ -17,7 +17,20 @@ def extract_features(product: str) -> ProductFeatures:
     print("=================================")
 
 
-    data = parse_json(response)
+    try:
+        data = parse_json(response)
+
+    except ValueError as e:
+        print("========== AI JSON ERROR ==========")
+        print(e)
+        print("===================================")
+
+        return ProductFeatures(
+            product_type="",
+            purpose="",
+            features=[],
+            exclude=[],
+        )
 
     return ProductFeatures(
         product_type=data["product_type"],
